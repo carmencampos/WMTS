@@ -1,0 +1,81 @@
+
+<html>
+
+<head>
+<title>OpenLayers PHP/MBTiles Example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- file to use openlayers -->
+    <link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.css" type="text/css">
+    <style>
+    .olControlAttribution {
+    	font-size: smaller; 
+    	right: 2px;
+    	bottom: 2px;
+    	position: absolute; 
+    	display: block;
+    }
+    </style>
+</head>
+
+<body>
+<!-- space where we are going to place the map -->
+<div id="map" style="width: 600px; height: 400px"></div>
+<!-- file to use openlayers -->
+<script src="http://openlayers.org/dev/OpenLayers.js"></script>
+    <script>
+        var map;
+
+        var mapquestOSM = new OpenLayers.Layer.XYZ("MapQuest Streets", ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png", "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png", "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png", "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"], {
+            transitionEffect: "resize"
+        });
+
+        var mapquestOAM = new OpenLayers.Layer.XYZ("MapQuest Aerial", ["http://oatile1.mqcdn.com/naip/${z}/${x}/${y}.png", "http://oatile2.mqcdn.com/naip/${z}/${x}/${y}.png", "http://oatile3.mqcdn.com/naip/${z}/${x}/${y}.png", "http://oatile4.mqcdn.com/naip/${z}/${x}/${y}.png"], {
+            transitionEffect: "resize"
+        });
+
+		// // this part is to show the layer using the map hosted in mapbox
+		// http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png is the url where our map is hosted in mapbox
+		// in general would behttp://a.tiles.mapbox.com/v3/{user}.{name-of-the-map}/${z}/${x}/${y}.png
+        var hostedTiles = new OpenLayers.Layer.XYZ("Hosted Tiles", ["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://b.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://c.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://d.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"], {
+            transitionEffect: "resize",
+            isBaseLayer: false,
+            opacity: 0.7,
+            visibility: true
+        });
+
+        // create TMS layer using MBTiles sqlite database
+        // this part is to show the layer using the local map
+		// mbtiles.php is the name of the file we use to extract our map from the .mbtiles file
+		var mbTiles = new OpenLayers.Layer.TMS("Local MBTiles File", "mbtiles.php", {
+            getURL: mbtilesURL,
+            transitionEffect: "resize",
+            isBaseLayer: false,
+            opacity: 0.7
+        });
+        // See: http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection
+        // example.mbtiles name of the file where our map is stored
+		function mbtilesURL (bounds) {
+            var db = "example.mbtiles";
+            var res = this.map.getResolution();
+            var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+            var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+            var z = this.map.getZoom();
+            return this.url+"?db="+db+"&z="+z+"&x="+x+"&y="+((1 << z) - y - 1);
+            
+        }
+
+        map = new OpenLayers.Map('map', {
+            projection: "EPSG:900913",
+            layers: [mapquestOSM, /*mapquestOAM,*/ mbTiles, hostedTiles]
+        });
+
+        map.zoomToMaxExtent();
+        var switcherControl = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(switcherControl);
+        switcherControl.maximizeControl();
+
+</script>
+
+</body>
+</html>
