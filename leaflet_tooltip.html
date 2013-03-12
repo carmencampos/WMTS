@@ -1,0 +1,70 @@
+<html>
+<head>
+  <script src='wax/ext/leaflet.js' type='text/javascript'></script>
+  <script src='wax/dist/wax.leaf.js' type='text/javascript'></script>
+  <link href='wax/ext/leaflet.css' rel='stylesheet' type='text/css' />
+  <style>
+  .wax-tooltip{
+	position:absolute;
+	right:0px;
+	width:180px;
+	height:75px;
+	top:0px;
+	bottom:0px;
+	font-size:15px;
+	z-index:99;
+	color:#fff;
+	padding:10px;
+	background:#000;
+  }
+  .wax-legend{
+	position:absolute;
+	left:50px;
+	width:550px;
+	height:75px;
+	top:0px;
+	bottom:0px;
+	font-size:15px;
+	z-index:99;
+	color:#fff;
+	padding:10px;
+	background:#000;
+  }
+  </style>
+</head>
+
+<body>
+<div id="map" style="width: 800px; height: 500px"></div>
+
+<script>
+
+//this is a example url in case we want to use one of the example that already exists in Mapbox
+//var url = 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp';
+
+//This is the url of our map in mapbox
+//in general will be http://a.tiles.mapbox.com/v3/{user}.{name-of-the-map}.jsonp
+var url = 'http://a.tiles.mapbox.com/v3/carmencampos.example.jsonp';
+
+wax.tilejson(url,
+  function(tilejson) {
+  var map = new L.Map('map')
+    .addLayer(new wax.leaf.connector(tilejson))
+    .setView(new L.LatLng(51.505, -0.09), 1);
+	
+	//To add a legend
+	wax.leaf.legend(map, tilejson).appendTo(map._container);
+	
+	//To add interaction
+	wax.leaf.interaction()
+    .map(map)
+    .tilejson(tilejson)
+	 //In this case, we add tooltip
+    .on(wax.tooltip().animate(true).parent(map._container).events());
+	
+	//We add  the legend and the tooltip directly in the container of the map, so we need to use
+	//some css code to locate them in an appropriate place
+});
+
+</script>
+</body>
+</html>
