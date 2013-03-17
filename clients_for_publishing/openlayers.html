@@ -1,0 +1,99 @@
+
+<html>
+
+<head>
+<title>OpenLayers PHP/MBTiles Example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- file to use openlayers -->
+    <link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.css" type="text/css">
+    <style>
+    .olControlAttribution {
+    	font-size: smaller; 
+    	right: 2px;
+    	bottom: 2px;
+    	position: absolute; 
+    	display: block;
+    }
+	.olImageLoadError { 
+		/* when OL encounters a 404, don't display the pink image */
+		display: none !important;
+	} 
+    </style>
+</head>
+
+<body>
+<!-- space where we are going to place the map -->
+<div id="map" style="width: 600px; height: 400px"></div>
+<!-- file to use openlayers -->
+<script src="http://openlayers.org/dev/OpenLayers.js"></script>
+    <script>
+        var map;
+
+        // this part is to show a base layer, we just indicate the url where the layer we want to use is located
+		var mapquestOSM = new OpenLayers.Layer.XYZ("MapQuest Streets", ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png", "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png", "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png", "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"], {
+            transitionEffect: "resize"
+        });
+
+        // this part is to show a base layer, we just indicate the url where the layer we want to use is located
+		var mapquestOAM = new OpenLayers.Layer.XYZ("MapQuest Aerial", ["http://oatile1.mqcdn.com/naip/${z}/${x}/${y}.png", "http://oatile2.mqcdn.com/naip/${z}/${x}/${y}.png", "http://oatile3.mqcdn.com/naip/${z}/${x}/${y}.png", "http://oatile4.mqcdn.com/naip/${z}/${x}/${y}.png"], {
+            transitionEffect: "resize"
+        });
+
+		// this part is to show the layer using the map hosted in mapbox
+		// http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png is the url where our map is hosted in mapbox
+		// in general would behttp://a.tiles.mapbox.com/v3/{user}.{name-of-the-map}/${z}/${x}/${y}.png
+        var hostedTiles = new OpenLayers.Layer.XYZ("Hosted Tiles", ["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://b.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://c.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://d.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"], {
+            transitionEffect: "resize",
+			// indicate that it is not base
+            isBaseLayer: false,
+            // indicate how transparent the layer is; we are showing this layer over a base, so we may be interested in
+			// be able to see the othe layer too
+		    opacity: 0.7,
+			// it is show by default
+            visibility: true
+        });
+
+        // we need the mbtiles.php file to extract the tiles
+        // this part is to show the layer using the local map
+		// mbtiles.php is the name of the file we use to extract our map from the .mbtiles file
+		var mbTiles = new OpenLayers.Layer.TMS("Local MBTiles File", "mbtiles.php", {
+            getURL: mbtilesURL,
+            transitionEffect: "resize",
+			// indicate that it is not base
+            isBaseLayer: false,
+			// it is not show by default
+			visibility: false,
+            // indicate how transparent the layer is; we are showing this layer over a base, so we may be interested in
+			// be able to see the othe layer too
+		    opacity: 0.7
+        });
+        
+		// example.mbtiles name of the file where our map is stored
+		function mbtilesURL (bounds) {
+            var db = "example.mbtiles";
+            var res = this.map.getResolution();
+            var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+            var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+            var z = this.map.getZoom();
+            return this.url+"?db="+db+"&z="+z+"&x="+x+"&y="+((1 << z) - y - 1);
+            
+        }
+
+		// here we create the map
+        map = new OpenLayers.Map('map', {
+			// This is the projection coordinate system, is Spherical Mercator
+            projection: "EPSG:900913",
+			// these are the layers that appear in the map
+            layers: [mapquestOSM, mapquestOAM, mbTiles, hostedTiles]
+        });
+
+        map.zoomToMaxExtent();
+        var switcherControl = new OpenLayers.Control.LayerSwitcher();
+        map.addControl(switcherControl);
+        switcherControl.maximizeControl();
+
+</script>
+
+</body>
+</html>

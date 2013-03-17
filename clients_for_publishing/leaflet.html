@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet PHP/MBTiles Example</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- file to use leaflet -->
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css" /><![endif]-->
+</head>
+<body>
+	<!-- space where we are going to place the map -->
+	<div id="map" style="width: 600px; height: 400px"></div>
+	<!-- file to use leaflet -->
+	<script src="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"></script>
+	<script>
+		var map;
+
+		// this part is to show a base layer, we just indicate the url where the layer we want to use is located
+		var mapquestOSM = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {
+			maxZoom: 17,
+			// {s} means one of the randomly chosen subdomains, and here we specificate which are the subdomains
+			// This lets you spread out the requests across multiple subdomains which helps both for sharing your 
+			// requests to the server, and to download more tiles in parallel
+			subdomains: ["otile1", "otile2", "otile3", "otile4"],
+		});
+
+		// this part is to show a base layer, we just indicate the url where the layer we want to use is located
+		var mapquestOAM = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
+			maxZoom: 17,
+			subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
+		});
+
+		// this part is to show the layer using the map hosted in mapbox
+		// http://{s}.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.png is the url where our map is hosted in mapbox
+		// in general would be http://{s}.tiles.mapbox.com/v3/{user}.{name-of-the-map}/{z}/{x}/{y}.png
+		var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.png', {
+		    tms: false,
+			// {s} means one of the randomly chosen subdomains, and here we specificate which are the subdomains
+			// This lets you spread out the requests across multiple subdomains which helps both for sharing your 
+			// requests to the server, and to download more tiles in parallel
+		    subdomains: ["a", "b", "c", "d"],
+			// indicate how transparent the layer is; we are showing this layer over a base, so we may be interested in
+			// be able to see the othe layer too
+		    opacity: 0.7
+		});
+
+		// this part is to show the layer using the local map
+		// we need the mbtiles.php file to extract the tiles
+		// mbtiles.php?db=example.mbtiles&z={z}&x={x}&y={y} is the local url
+		// in general would be {name-of-the-file-to-extract-the-map}.php?db={name-of-the-map}.mbtiles&z={z}&x={x}&y={y}
+		var mbTiles = new L.tileLayer('mbtiles.php?db=example.mbtiles&z={z}&x={x}&y={y}', {
+		    tms: true,
+			// indicate how transparent the layer is; we are showing this layer over a base, so we may be interested in
+			// be able to see the othe layer too
+		    opacity: 0.7
+		});
+
+		// here we create the map
+		map = new L.Map("map",{
+			// these are the layers that appear by default
+			layers: [mapquestOSM, hostedTiles]
+		}).fitWorld();
+
+		// layers which are going to be always in the map, we have to choose only one
+		var baseLayers = {
+			"MapQuest Streets": mapquestOSM,
+			"MapQuest Aerial": mapquestOAM
+		};
+		
+		// we can decide when we want to show these layers; one all or none
+		var overlays = {
+			"Local MBTiles File": mbTiles,
+			"Hosted Tiles": hostedTiles
+		};
+
+		layersControl = new L.Control.Layers(baseLayers, overlays, {
+			collapsed: false
+		});
+
+		map.addControl(layersControl);
+		
+	</script>
+</body>
+</html>
