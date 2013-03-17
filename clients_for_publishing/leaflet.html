@@ -35,7 +35,8 @@
 		// http://{s}.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.png is the url where our map is hosted in mapbox
 		// in general would be http://{s}.tiles.mapbox.com/v3/{user}.{name-of-the-map}/{z}/{x}/{y}.png
 		var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.png', {
-		    tms: false,
+		    //If true, inverses Y axis numbering for tiles (turn this on for TMS services)
+			tms: false,
 			// {s} means one of the randomly chosen subdomains, and here we specificate which are the subdomains
 			// This lets you spread out the requests across multiple subdomains which helps both for sharing your 
 			// requests to the server, and to download more tiles in parallel
@@ -50,7 +51,8 @@
 		// mbtiles.php?db=example.mbtiles&z={z}&x={x}&y={y} is the local url
 		// in general would be {name-of-the-file-to-extract-the-map}.php?db={name-of-the-map}.mbtiles&z={z}&x={x}&y={y}
 		var mbTiles = new L.tileLayer('mbtiles.php?db=example.mbtiles&z={z}&x={x}&y={y}', {
-		    tms: true,
+		    //If true, inverses Y axis numbering for tiles (turn this on for TMS services)
+			tms: true,
 			// indicate how transparent the layer is; we are showing this layer over a base, so we may be interested in
 			// be able to see the othe layer too
 		    opacity: 0.7
