@@ -1,0 +1,163 @@
+%rebase layout
+
+<div class="container">
+    <section>
+<div>
+<p class="text">Using TileMill is easy once you have done your first project because everything is intuitive. Once we have open the program, to start creating a map, we have to press the button “New project”.</p>
+<img src="images/pict1.jpg" alt="Init TileMill">
+</div>
+
+<div>
+<p class="text">We need to provide some information about the project. The only require data is the name of the file. But we can also add a name for the project, a description and the image format. 
+There is an option “Default data” to indicate that we want an initial world layer to appear in our project with an style:</p>
+<ul class="text"><li>background-color: #b8dee6;   background color.</li>
+<li>line-color: #85c5d3;   color of the line that separates the countries.</li>
+<li>line-width: 2;   width of the line that separate the countries.</li>
+<li>line-join: round;   kind of line that separate the countries.</li>
+<li>polygon-fill: #fff;   color to fill the countries.</li></ul>
+<img src="images/pict2.jpg" alt="New project">
+<p class="text">Then we press “Add”.</p>
+<p class="text">It returns to the main page in TileMill, and we can observe that our project has been created there. To open it, we have to click in its image.</p>
+</div>
+
+<div>
+<p class="text">To begin with, we should add a layer. To do that, we have to select the appropriate image down on the left and press the button “Add layer”. </p>
+<p class="text">As we can see, there are other options for every layer:</p>
+<img src="images/pict0.jpg" alt="Layer">
+<ol class="text"><li>To see the features of the layer. This features can be used, for example in this case, to consider only a specific country, or a group of them which satisfy a concrete property; to show the value of a concrete feature in the map.</li>
+<li>To zoom in the map.</li>
+<li>To not consider the layer. It is like if we delete the layer. But it is still there, in case we need to consider it again, we do not have to import it.</li>
+<li>To edit the layer.</li>
+<li>To delete the layer.</li></ol>
+</div>
+
+<div>
+<p class="text">When we add a layer, we have to indicate the datasource address where the file is located; it could be a file in our computer or be located in MapBox. When can also select the file as “favorite”, so when we do another project, we do not need to look for the file.
+We could assign an ID and a class for the layer, so we can apply a css style to the layer. The ID is necessary, so in the we do not choose any, one will be automatically assigned.
+</p>
+<img src="images/pict3.jpg" alt="Add layer">
+<p class="text">We just have to look for the different layers we want to add. Some options are:</p>
+<ul class="text"><li>http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.4.0/cultural/10m-populated-places-simple.zip   show the different cities.</li>
+<li>http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.4.0/cultural/10m-admin-0-country-points.zip   show the names of the countries.</li></ul>
+</div>
+
+<div>
+<p class="text">We could add the lakes in the world, which datasource is http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-lakes.zip, with the ID lake and apply a style:</p>
+<ul class="text"><li>@sans_bold:"Droid Sans Bold","Arial Bold","DejaVu Sans Bold";   select the kind of letter, we can only put a name, or several, in case one of the options is not available.</li>
+<li>@water: #40E0D0;   we can define a name for an specific color, in case we want to use the same several times. Of course, we could also write the code of the color every time.</li>
+<li>#lake[zoom>=0][ScaleRank<=2],   depending on the zoom we are applying, we will only show determinate lakes. We can see the ScaleRank of every element in the layers image.</li>
+<li>line-color: @water;   line of the lake color</li>
+<li>polygon-fill: @water;   color inside the line</li></ul>
+<img src="images/pict4.jpg" alt="lakes">
+</div>
+
+<div>
+<p class="text">We could also add the oceans and the rivers, which are respectively in:  </br>   
+http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-ocean.zip    </br>
+http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-rivers-lake-centerlines.zip
+</p>
+<img src="images/pict6.jpg" alt="water">
+</div>
+
+<div>
+<p class="text">In order to show the names of the cities, we need to add this layer </br>
+ http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.4.0/cultural/10m-admin-0-country-points.zip</p>
+<ul class="text"><li>text-name:'[NAMEASCII]';   the name of the city, we could have used NAME, NAME_ALT, LS_NAME… In every particular case, we can choose one or another, and we can consult what we are going to show in the features of the layer.</li>
+<li>text-face-name:@sans_bold;   type of letter</li>
+<li>text-fill:#000;   text color inside borders</li>
+<li>text-size:9;   size of the letter</li>
+<li>[zoom=10] { [SCALERANK<3] { text-size: 16; text-character-spacing:2; } ... } depending on zoom level, we choose the size of the text and the space between characters</li></ul>
+<img src="images/pict8.jpg" alt="Show labels">
+</div>
+
+<div>
+<p class="text">If we want a layer to be on top of another, for example the names, so they are not half cover, we just have to select it and move it to the position where we want it.</p>
+<img src="images/pict9.jpg" alt="Order layers">
+</div>
+
+<div>
+<p class="text">To add a teaser, we press the image and we choose “teaser” in the templates. In the combox, we have to choose for what layer we want to do the teaser.</p>
+<img src="images/pict10.jpg" alt="Add teaser">
+</div>
+
+<div>
+<p class="text">Once we select one, the different attributes we can use appear in the second text area. And in the first one, we can write the text we want to show in the map when the mouse rolls a concrete element. We can show one or more element, and a normal sentence.</p>
+<!--<img src="images/pict11.jpg" alt="Create teaser">-->
+</div>
+
+<div>
+<p class="text">To create a legend for the map, we press the image and we choose “legend” in the templates. We can add normal text or html formatted text. Te legend will appear down in the right.</p>
+<!--<img src="images/pict12.jpg" alt="Add legend">-->
+</div>
+
+<div>
+<p class="text">To export the map, we press the button and select the kind of file we want to get. In this case, MBTiles</p>
+<img src="images/pict16.jpg" alt="Export as MBTiles">
+</div>
+
+<div>
+<p class="text">We can choose a name, a description, the attribution and the version. And the filename is the one we set in the beginning. An important thing here is the zoom. By default, the zoom is the complete range of values, which could take years in generate the map. We can change the minimum and the maximum, and we can observe how many tiles will be generated and how much space will be needed. We can also change the part of the map we want to see when we open it. And then we press “Export”.</p>
+<img src="images/pict17.jpg" alt="Data to export">
+<p class="text">Once it is finish, we press the button “Save MBTiles”.</p>
+</div>
+
+<div>
+<img src="images/pict18.jpg" alt="MapBox">
+<p class="text">To publish our map in Mapbox (http://mapbox.com/) we need to create an account and to log in.</p>
+<p class="text">We have to press the tool image and select “Update layer” option.</p>
+</div>
+
+<div>
+<img src="images/pict21.jpg" alt="Upload file">
+<p class="text">Then we just select a file in our computer and press “Upload file” button. The file size must be less than 5GB, but also less than the capacity we have available in our account</p>
+</div>
+
+<div>
+<p class="text">Publish map using leaflet</p>
+<ol class="text"><li>We need to have a server installed in our system.</li>
+<li>We create a folder to work with leaflet in the appropriate folder in the server, the one where the server accesses to show the files.</li>
+<li>We add the server code to read MBTiles to this folder.</li>
+<li>We add our index.html page to this folder.</li>
+<li>We add our {name-of-the-map}.mbtiles to this folder.</li>
+<li>We run the server.</li>
+<li>We go to localhost/{name-of-the-folder}</li></ol>
+<p class="text">In our index.html page we have to write something like this:</p>
+<p class="text">To show the layer using the map hosted in mapbox. </br>
+In general would be http://{s}.tiles.mapbox.com/v3/{user}.{name-of-the-map}/{z}/{x}/{y}.png </br>
+var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.png'
+</p>
+<p class="text">To show the layer using the local map.
+In general would be {name-of-the-file-to-extract-the-map}.php?db={name-of-the-map}.mbtiles&z={z}&x={x}&y={y}
+var mbTiles = new L.tileLayer('mbtiles.php?db=example.mbtiles&z={z}&x={x}&y={y}'
+</p>
+</div>
+
+<div>
+<p class="text">Publish map using openlayers</p>
+<ol class="text"><li>We need to have a server installed in our system.</li>
+<li>We create a folder to work with leaflet in the appropriate folder in the server, the one where the server accesses to show the files.</li>
+<li>We add the server code to read MBTiles to this folder.</li>
+<li>We add our index.html page to this folder.</li>
+<li>We add our {name-of-the-map}.mbtiles to this folder.</li>
+<li>We run the server.</li>
+<li>We go to localhost/{name-of-the-folder}</li></ol>
+<p class="text">In our index.html page we write something like this:</p>
+<p class="text">To show the layer using the map hosted in mapbox </br>
+In general would behttp://a.tiles.mapbox.com/v3/{user}.{name-of-the-map}/${z}/${x}/${y}.png </br>
+var hostedTiles = new OpenLayers.Layer.XYZ("Hosted Tiles", ["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://b.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://c.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://d.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"]
+</p>
+<p class="text">Create TMS layer using MBTiles sqlite database </br>
+To show the layer using the local map </br>
+var mbTiles = new OpenLayers.Layer.TMS("Local MBTiles File", "mbtiles.php", </br>
+example.mbtiles name of the file where our map is stored </br>
+function mbtilesURL (bounds) { </br>
+            var db = "example.mbtiles"; </br>
+            var res = this.map.getResolution(); </br>
+            var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w)); </br>
+            var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h)); </br>
+            var z = this.map.getZoom(); </br>
+            return this.url+"?db="+db+"&z="+z+"&x="+x+"&y="+((1 << z) - y - 1);   }
+</p>
+</div>
+    </section>
+</div>
