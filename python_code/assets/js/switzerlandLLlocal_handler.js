@@ -42,6 +42,7 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	layers: [oam, mbTiles]
 });*/
 
+
 var url = 'http://localhost:8000/api/tile/points_of_interest/{z}/{x}/{y}.json';
 
 wax.tilejson(url,
@@ -53,6 +54,9 @@ wax.tilejson(url,
             .setView(new L.LatLng(47, 8), 7);
         var interaction = wax.leaf.interaction(map, tilejson);
     });
+	
+	// Add a scale to the map
+	L.control.scale().addTo(map);
 /*
 // We need Wax to add the legend and the tooltips to the map
 wax.tilejson(url, function(tilejson) {

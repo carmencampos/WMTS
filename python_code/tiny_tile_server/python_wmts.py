@@ -2,7 +2,7 @@
 import bottle
 import python_server.py
 
-def get_tile_wmts(layer):
+def get_tile_wmts(layer, x, y, z):
 
 	python_wmts = bottle.Bottle();
 

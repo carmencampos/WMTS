@@ -67,6 +67,9 @@ wax.tilejson(url, function(tilejson) {
 	// Add to switch between the available layers
 	map.addControl(layersControl);
 	
+	// Add a scale to the map
+	L.control.scale().addTo(map);
+	
 });
 
 });

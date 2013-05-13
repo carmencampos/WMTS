@@ -9,12 +9,18 @@ $(document).ready(function() {
 		attribution : "asdfdsf",
 		subdomains : ["example"]
 	});
+	
+	//L.tileLayer('<ServiceRoot>?SERVICE=WMTS&REQUEST=GetTile&VERSION=[version]&Layer=[layername]&Format=image/png&TileMatrixSet=[MatrixsetName]=&TileMatrix={z}&TileRow={x}&TileCol={y}').addTo(map);
+	
+	//L.tileLayer('http://a.tiles.mapbox.com/v3/carmencampos?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&Layer=example&Format=image/png&TileMatrixSet=openlayerssphericalmercator:epsg:900913&TileMatrix={z}&TileRow={x}&TileCol={y}').addTo(map);
 
+	var virtual = L.tileLayer('http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}');
+						
 	map = new L.map('map',{  //here
 		// these are the layers that appear by default
 		center : new L.LatLng(39.73, -104.99),
 		zoom : 7,
-		layers: [oam]
+		layers: [virtual]
 	});
 	
 /*var url = 'http://a.tiles.mapbox.com/v3/carmencampos/example.jsonp';

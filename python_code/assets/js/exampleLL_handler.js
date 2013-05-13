@@ -43,13 +43,15 @@ var url = 'http://a.tiles.mapbox.com/v3/carmencampos.example.jsonp';
 
 // We need Wax to add the legend and the tooltips to the map
 wax.tilejson(url, function(tilejson) {
+
+	//var layer = L.mapbox.gridLayer('carmencampos.example');
   	// here we create the map
 	map = new L.Map("map",{
-		layers: [oam, hostedTiles]
+		layers: [oam, layer]
 	}).fitWorld()
 	// to select the latitud, longitud, and zoom that should appear in the beggining
 	.setView(new L.LatLng(47, 8), 3);
-
+/*
 	// To add a legend
 	wax.leaf.legend(map, tilejson).appendTo(map._container);
 	
@@ -68,6 +70,6 @@ wax.tilejson(url, function(tilejson) {
 	// Add a scale to the map
 	L.control.scale().addTo(map);
 	
-});
+});*/
 
 });

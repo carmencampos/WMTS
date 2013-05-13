@@ -3,37 +3,28 @@ var map;
 
 $(document).ready(function() {
 
-    var example = new OpenLayers.Layer.XYZ("ABC", ["http://localhost:8000/api/tile/example/${z}/${x}/${y}.png"], {
+        var example = new OpenLayers.Layer.XYZ("ABC", ["http://localhost:8000/api/tile/example/${z}/${x}/${y}.png"], {
             tms: true,
 			attribution: "blabla",
             transitionEffect: "resize"
         });
 		
-	var wmts = new OpenLayers.Layer.WMTS({
-		name: "My WMTS Layer",
-		url: "http://a.tiles.mapbox.com/v3/carmencampos",
-		layer: "example",
-		style: "default",
-		matrixSet: "googlemapscompatible"
-	});
-		
 	map = new OpenLayers.Map('map', {
           projection: new OpenLayers.Projection("EPSG:900913")
-    });
+      });
 
-    var base_layer = new OpenLayers.Layer.OSM();
+      //var base_layer = new OpenLayers.Layer.OSM();
 
-    /*var base_layer = new OpenLayers.Layer.TMS(
-        'TMS street_layer',
-        '/data/',
-        {layername: 'example',
-        type: 'png', isBaseLayer: true}  //false
-    );*/
+      var base_layer = new OpenLayers.Layer.TMS(
+          'TMS street_layer',
+          '/data/',
+          {layername: 'example',
+           type: 'png', isBaseLayer: true}  //false
+      );
 
-	map.addLayer(wmts);
-    //map.addLayer(base_layer);
-    //map.addLayer(overlay_layer);
-    map.zoomToMaxExtent();
+      map.addLayer(base_layer);
+      //map.addLayer(overlay_layer);
+      map.zoomToMaxExtent();
 		
 		/* var layer = new OpenLayers.Layer.TMS(
     "My Layer", // name for display in LayerSwitcher

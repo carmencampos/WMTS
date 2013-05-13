@@ -10,10 +10,10 @@ config_url = [];
 config_url.append("http://localhost:8000/")
 
 
-# VERRRRRRRRR    AND 185
+# VERRRRRRRRR   86   167  185
 service = $_GET['service'] if ('service' in $_GET) else ""
 layer = $_GET['layer'] if ('layer' in $_GET) else ""
-callback = $_GET['callback'] if ('callback' in $_GET) else ""
+# callback = $_GET['callback'] if ('callback' in $_GET) else ""
 
 # CORS header
 print 'Access-Control-Allow-Origin: *'
@@ -83,10 +83,10 @@ if(service == 'json'):
         output = tilejsons
 	output = json_encode(output);
     output = output.replace("\\/","/") 
-    if(callback):
-        print "callback(output)"
-    else
-        print output
+    #if(callback):
+    #    print "callback(output)"
+    #else
+    print output
 
 
 # INTERNAL FUNCTIONS:
@@ -184,12 +184,12 @@ def doConditionalGet(timestamp):
     print "ETag: etag"
 	# VERRRRRRRRRRRR
     #See if the client has provided the required headers
-    if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
-        stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
-        false
-    if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
-        stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : 
-        false
+    #if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
+    #    stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
+    #    false
+    #if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
+    #    stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : 
+    #    false
     if(!if_modified_since && !if_none_match):
         return None
     # At least one of the headers is there - check them

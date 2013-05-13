@@ -56,6 +56,20 @@ var url = '/data/example/metadata.json'; //NOT WORK
 // 'http://earthatlas.info/nz/tiles/nz-popden.tilejson'
 // http://earthatlas.info/nz/?base=Population
 
+
+wax.tilejson(url,
+  function(tilejson) {
+  var map = new L.Map('map')
+    .addLayer(new wax.leaf.connector(tilejson))
+    .setView(new L.LatLng(51.505, -0.09), 1);
+  wax.leaf.interaction()
+    .map(map)
+    .tilejson(tilejson)
+    .on(wax.tooltip().animate(true).parent(map._container).events());
+});
+
+/*
+
 // We need Wax to add the legend and the tooltips to the map
 //wax.tilejson(url, 
 //function(tilejson) {
