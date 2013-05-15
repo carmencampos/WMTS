@@ -1,7 +1,7 @@
 
-$(document).ready(function() {
-	
 var map;
+
+$(document).ready(function() {
 
 // we take data from OpenStreetMap to use a base layer
 var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
@@ -33,6 +33,46 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 
+var tilejson = {
+    tilejson: '1.0.0',
+    //tms: true, 
+	scheme: 'tms',
+	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
+    template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
+    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],
+    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],
+	//grids: ['http://c.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json'],
+    formatter: function (options, data) { return "CODE: " + data.Name }
+};
+
+//wax.tilejson(url, 
+//function(tilejson){
+  	// here we create the map
+	map = new L.map('map',{
+		center : new L.LatLng(47, 8),
+		zoom : 3,
+		// these are the layers that appear by default
+		layers: [oam, mbTiles]
+	});
+	
+	// To add a legend
+	wax.leaf.legend(map, tilejson).appendTo(map._container);
+	
+	// To add interaction
+	wax.leaf.interaction()
+    	.map(map)
+    	.tilejson(tilejson)
+	// In this case, we add tooltip; when we want it to appear in a static place
+    	//.on(wax.tooltip().animate(true).parent(map._container).events());
+	// In this case, we add movetip; when we want it to appear where the mouse is
+		.on(wax.movetip().parent(map._container).events());
+
+	// Add to switch between the available layers
+	map.addControl(layersControl);
+	
+	// Add a scale to the map
+	L.control.scale().addTo(map);
+
 /*
 var tilejson = {
     tilejson: '1.0.0',
@@ -48,15 +88,15 @@ var tilejson = {
 // CAMBIAR URL A LOCAL
 //var url = 'http://a.tiles.mapbox.com/v3/carmencampos.example.jsonp';
 //var url = 'http://localhost:8000/api/tile/example'; //NOT WORK
-var url = 'http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json';
+//var url = 'http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json';
 //var url = 'http://localhost:8000/api/grid/example.json'; //NOT WORK
 //var url = 'http://localhost:8000/api/grid/example.jsonp'; //NOT WORK
-var url = '/data/example/metadata.json'; //NOT WORK
+// var url = '/data/example/metadata.json'; //NOT WORK
 //var url = 'http://localhost:8000/api/grid/example.tilejson'; //NOT WORK
 // 'http://earthatlas.info/nz/tiles/nz-popden.tilejson'
 // http://earthatlas.info/nz/?base=Population
 
-
+/*
 wax.tilejson(url,
   function(tilejson) {
   map = new L.Map('map')
@@ -92,12 +132,7 @@ wax.tilejson(url,
     	//.on(wax.tooltip().animate(true).parent(map._container).events());
 	// In this case, we add movetip; when we want it to appear where the mouse is
 		.on(wax.movetip().parent(map._container).events());
-*/	
-	// Add to switch between the available layers
-	map.addControl(layersControl);
-	
-	// Add a scale to the map
-	L.control.scale().addTo(map);
+*/
 	
 //});
 

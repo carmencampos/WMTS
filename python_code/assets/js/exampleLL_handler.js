@@ -69,18 +69,4 @@ wax.tilejson(url,
 		.on(wax.movetip().parent(map._container).events());
 });
 
-/*
-// We need Wax to add the legend and the tooltips to the map
-wax.tilejson(url, function(tilejson) {
-
-	//var layer = L.mapbox.gridLayer('carmencampos.example');
-  	// here we create the map
-	map = new L.Map("map",{
-		layers: [oam, layer]
-	}).fitWorld()
-	// to select the latitud, longitud, and zoom that should appear in the beggining
-	.setView(new L.LatLng(47, 8), 3);
-	
-});*/
-
 });

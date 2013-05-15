@@ -17,7 +17,7 @@ var osm = new OpenLayers.Layer.XYZ(
 
 var utfgrid = new OpenLayers.Layer.UTFGrid({
     //url: "utfgrid/geography-class/${z}/${x}/${y}.grid.json",
-	url: "http://a.tiles.mapbox.com/v3/mapbox.geography-class/${z}/${x}/${y}.grid.json",
+	url: "http://api.tiles.mapbox.com/v3/mapbox.geography-class/${z}/${x}/${y}.grid.json",
     utfgridResolution: 4, // default is 2
     displayInLayerSwitcher: false
 });
@@ -43,12 +43,13 @@ var output = document.getElementById("output");
 var flag = document.getElementById("flag");
 
 var callback = function(infoLookup, loc, pixel) {
-    var msg = "";
+    var msg = "mmm ";
     if (infoLookup) {
         var info;
         for (var idx in infoLookup) {
             // idx can be used to retrieve layer from map.layers[idx]
             info = infoLookup[idx];
+			msg = "mandm ";
             if (info && info.data) {
                 output.innerHTML = info.data.admin;
                 flag.innerHTML = "<img src='data:image/png;base64," + info.data.flag_png + "'>";
