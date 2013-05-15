@@ -1,9 +1,116 @@
 
-var map;
-
 $(document).ready(function() {
 
+var map;
 
+	var earth = new OpenLayers.Layer.XYZ(
+		"Natural Earth",
+		["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"]
+	);
+
+		/*
+         * Map
+         */
+        map = new OpenLayers.Map({
+            div: "map", 
+            projection: "EPSG:900913",
+			layers: [earth],
+            controls: [
+				new OpenLayers.Control.Navigation({
+					dragPanOptions: {
+					enableKinetic: true
+					}	
+				}),
+				new OpenLayers.Control.Zoom(),
+				new OpenLayers.Control.ScaleLine(),
+				new OpenLayers.Control.LayerSwitcher()
+			],
+			center: [47, 8],
+			zoom: 3
+        });
+		
+		//map.zoomToMaxExtent();
+
+        var switcherControl = new OpenLayers.Control.LayerSwitcher();
+
+        //map.addControl(switcherControl);
+
+        switcherControl.maximizeControl();
+		
+		//map.addControl(new OpenLayers.Control.ScaleLine());
+
+        /*
+         * Controls
+         */
+        var callback = function(infoLookup) {
+            var msg = "mmm ";
+            if (infoLookup) {
+				mas += " hay info ";
+                var info;
+                for (var idx in infoLookup) {
+                    // idx can be used to retrieve layer from map.layers[idx]
+                    info = infoLookup[idx];
+                    if (info && info.data) {
+                        msg += "[" + info.id + "] <strong>In 2005, " + 
+                            info.data.NAME + " had a population of </strong> ";
+                    }
+					else
+						msg += " no info o info data ";
+                }
+            }
+            document.getElementById("attrs").innerHTML = msg;
+        };
+            
+        var controls = {
+            move: new OpenLayers.Control.UTFGrid({
+                callback: callback,
+                handlerMode: 'move'
+            }),
+            hover: new OpenLayers.Control.UTFGrid({
+                callback: callback,
+                handlerMode: 'hover'
+            }),
+            click: new OpenLayers.Control.UTFGrid({
+                callback: callback,
+                handlerMode: 'click'
+            })
+        };
+        var control;
+        for(var key in controls) {
+            control = controls[key];
+            control.deactivate();
+            map.addControl(control);
+        }
+        controls['move'].activate();
+
+        function toggleControl(el) {
+            for(var c in controls) {
+                control = controls[c];
+                control.deactivate();
+            }
+            control = controls[el.value];
+            control.activate();
+        }
+
+        /*
+         * Layers
+         */
+
+        var osm = new OpenLayers.Layer.OSM();
+        map.addLayer(osm);
+
+        var grid_layer = new OpenLayers.Layer.UTFGrid( 
+            'Invisible UTFGrid Layer', 
+            "http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.json",
+            {utfgridResolution: 4} // default is 2
+        );
+        map.addLayer(grid_layer);
+
+        map.zoomTo(1);
+
+});
+
+/*
 var osm = new OpenLayers.Layer.XYZ(
     "MapQuest OSM", 
     [

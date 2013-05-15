@@ -1,7 +1,7 @@
 
-var map;
-
 $(document).ready(function() {
+
+var map;
 
 // We take data from OpenStreetMap to use a base layer
 var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
@@ -50,12 +50,6 @@ wax.tilejson(url,
 	  .addLayer(hostedTiles)
       .setView(new L.LatLng(47, 8), 3);
 	  
-	// Add to switch between the available layers
-	map.addControl(layersControl);
-	
-	// Add a scale to the map
-	L.control.scale().addTo(map);
-	  
 	// Add a legend
 	wax.leaf.legend(map, tilejson).appendTo(map._container);
 	 
@@ -67,6 +61,13 @@ wax.tilejson(url,
     	//.on(wax.tooltip().animate(true).parent(map._container).events());
 	// In this case, we add movetip; when we want it to appear where the mouse is
 		.on(wax.movetip().parent(map._container).events());
+		
+	// Add to switch between the available layers
+	map.addControl(layersControl);
+	
+	// Add a scale to the map
+	L.control.scale().addTo(map);
+	
 });
 
 });

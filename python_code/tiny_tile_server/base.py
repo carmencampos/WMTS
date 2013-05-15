@@ -8,6 +8,7 @@ def get_tile(layer, x, y, z, ext):
 		# Connect to the database and get the cursor
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c = db.cursor()
+		closing(db.cursor)
 	except:
 #		return None
 		# In case the connection can not be done
@@ -29,6 +30,7 @@ def get_grid(layer, x, y, z, ext):
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c1 = db.cursor()
 		c2 = db.cursor()
+		closing(db.cursor)
 	except:
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])

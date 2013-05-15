@@ -2,11 +2,13 @@
 import bottle
 import python_server.py
 
-def get_tile_wmts(layer, x, y, z):
+def get_tile_wmts(mylayer, x, y, z):
 
-	python_wmts = bottle.Bottle();
+	layer = mylayer;
 
-	maps = maps();
+	python_wmts = bottle.Bottle()
+
+	maps = maps()
 
 	bottle.response.content_type = "application/xml"
 
@@ -66,19 +68,19 @@ def get_tile_wmts(layer, x, y, z):
 
 	<%
 	for m in maps:
-		basename = m['basename'];
-		title = m['name'] if ('name' in m) else basename;
-		profile = m['profile'];
-		bounds = m['bounds'];
-		format = m['format'];
-		mime = 'image/jpeg' if (format == 'jpg') else 'image/png';
+		basename = m['basename']
+		title = m['name'] if ('name' in m) else basename
+		profile = m['profile']
+		bounds = m['bounds']
+		format = m['format']
+		mime = 'image/jpeg' if (format == 'jpg') else 'image/png'
 		if (profile == 'geodetic'):
 			tileMatrixSet = "WGS84"
 		else:
 			tileMatrixSet = "GoogleMapsCompatible"
-			(minx, miny) = mercator.LatLonToMeters(bounds[1], bounds[0]);
-			(maxx, maxy) = mercator.LatLonToMeters(bounds[3], bounds[2]);
-			bounds3857 = array(minx, miny, maxx, maxy);
+			(minx, miny) = mercator.LatLonToMeters(bounds[1], bounds[0])
+			(maxx, maxy) = mercator.LatLonToMeters(bounds[3], bounds[2])
+			bounds3857 = array(minx, miny, maxx, maxy)
 	%>
 
 		<Layer>

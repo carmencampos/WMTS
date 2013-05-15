@@ -61,7 +61,7 @@ wax.tilejson(url,
 	// In this case, we add tooltip; when we want it to appear in a static place
     	//.on(wax.tooltip().animate(true).parent(map._container).events());
 	// In this case, we add movetip; when we want it to appear where the mouse is
-	.on(wax.movetip().parent(map._container).events());
+		.on(wax.movetip().parent(map._container).events());
 	
 	// Add to switch between the available layers
 	map.addControl(layersControl);

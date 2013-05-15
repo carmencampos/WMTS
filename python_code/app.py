@@ -15,7 +15,7 @@ import api
 
 def get_app():
 	# load main application
-    app = web.app
+    app = web.application
 	
 	# load modules (sub-applications)
     app.mount(app=api.api, prefix='/api')

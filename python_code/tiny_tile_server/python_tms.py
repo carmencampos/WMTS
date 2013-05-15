@@ -4,15 +4,15 @@ import python_server.py
 
 def get_tile_tms(layer):
 
-	python_tms = bottle.Bottle();
+	python_tms = bottle.Bottle()
 
-	maps = maps();
+	maps = maps()
 
 	bottle.response.content_type = "application/xml"
 
 	print "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"; 
 
-	if (layer === ""):
+	if (layer == ""):
 	  maps = maps()
 
 	# -----------

@@ -1,14 +1,11 @@
 
-
 import bottle
 import glob
 import json
 import sqlite3
 import hashlib
 
-config_url = [];
-config_url.append("http://localhost:8000/")
-
+config_url = ["http://localhost:8000/"]
 
 # VERRRRRRRRR   86   167  185
 service = $_GET['service'] if ('service' in $_GET) else ""
@@ -24,7 +21,7 @@ print 'Access-Control-Allow-Origin: *'
 # ------------
 if(service == 'test'):
     bottle.response.content_type = "text/plain; charset=utf-8"
-    print "Tiny Tile Server at %s" % config_url;
+    print "Tiny Tile Server at %s" % config_url
 
 	
 # ------------
@@ -55,7 +52,7 @@ You can easily convert existing geodata (GeoTIFF, ECW, MrSID, etc) to this tile 
 <%
 # Print the available maps
 else:
-    # print_r(maps);
+    # print_r(maps)
     print "<h3>Available maps</h3>"
     print "<ul>"
     for map in maps:
@@ -74,14 +71,14 @@ if(service == 'json'):
     bottle.response.content_type = "application/json; charset=utf-8"
   
     if(layer):
-        output = metadataTileJson(layer(layer));
+        output = metadataTileJson(layer(layer))
     else
         maps = maps()
         tilejsons = []
         foreach map in maps:
             tilejsons[] = metadataTileJson(map)
         output = tilejsons
-	output = json_encode(output);
+	output = json_encode(output)
     output = output.replace("\\/","/") 
     #if(callback):
     #    print "callback(output)"
@@ -92,7 +89,7 @@ if(service == 'json'):
 # INTERNAL FUNCTIONS:
 
 def maps()
-    maps = maps();
+    maps = maps()
     # Scan all directories with metadata.json
     mjs = glob.glob('*/metadata.json')
     if(mjs): 
@@ -123,6 +120,7 @@ def metadataFromMbtiles(mbt):
 		# Connect to the database and get the cursor
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c = db.cursor()
+		closing(db.cursor)
 	except:
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
@@ -131,7 +129,7 @@ def metadataFromMbtiles(mbt):
 	res = c.fetchall()
 	for r in res:
 	    metadata.append(r['name'], r['value'])
-  	metadata = metadataValidation(metadata);
+  	metadata = metadataValidation(metadata)
   	metadata['basename'] = mbt
 	return metadata
 
@@ -167,14 +165,14 @@ def metadataTileJson(metadata):
 # VERRRRRRRRRRRRRRRRRRRRRRRRR
 def selfUrl( $serverOnly = false ):
     if(!isset($_SERVER['REQUEST_URI'])){
-        $serverrequri = $_SERVER['PHP_SELF'];
+        $serverrequri = $_SERVER['PHP_SELF']
     }else{
-        $serverrequri = $_SERVER['REQUEST_URI'];
+        $serverrequri = $_SERVER['REQUEST_URI']
     }
-    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
-    $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
-    if ($serverOnly) return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].$port."/";
-    return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].$port.$serverrequri;
+    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""
+    $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"])
+    if ($serverOnly) return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].$port."/"
+    return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].$port.$serverrequri
 
 def doConditionalGet(timestamp):
     last_modified = time.strftime('D, d M Y H:i:s \G\M\T', time.gmtime(timestamp))
@@ -190,22 +188,18 @@ def doConditionalGet(timestamp):
     #if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
     #    stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : 
     #    false
-    if(!if_modified_since && !if_none_match):
+    !if_modified_since && !if_none_match:
         return None
     # At least one of the headers is there - check them
-    if(if_none_match && if_none_match != etag):
+    if_none_match && if_none_match != etag:
         return None
-    if(if_modified_since && if_modified_since != last_modified):
+    if_modified_since && if_modified_since != last_modified:
         return None
     # Nothing has changed since their last request - serve a 304 and exit
     print 'HTTP/1.0 304 Not Modified'
 
 
 class GlobalMercator:
-
-	tileSize
-	initialResolution
-	originShift
 
 	# Initialize the TMS Global Mercator pyramid
 	def __init__(self)
@@ -220,21 +214,21 @@ class GlobalMercator:
 		mx = lon * self.originShift / 180.0
 		my = log(tan((90 + lat) * pi / 360.0 )) / (pi / 180.0)
 		my *= selforiginShift / 180.0
-		return array(mx, my)
+		return (mx, my)
 
 	# Converts XY point from Spherical Mercator EPSG:900913 to lat/lon in WGS84 Datum
 	def MetersToLatLon(mx, my):
 		lon = (mx / self.originShift) * 180.0
 		lat = (my / self.originShift) * 180.0
 		lat = 180 / pi * (2 * atan(exp(lat * pi / 180.0)) - pi / 2.0)
-		return array(lat, lon)
+		return (lat, lon)
 
 	# Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
 	def PixelsToMeters(px, py, zoom):
 		res = Resolution(zoom)
 		mx = px * res - self.originShift
 		my = py * res - self.originShift
-		return array(mx, my)
+		return (mx, my)
 
 	# Converts EPSG:900913 to pyramid pixel coordinates in given zoom level
 	def MetersToPixels(mx, my, zoom):
