@@ -1,7 +1,7 @@
 
-$(document).ready(function() {
-	
 var map;
+
+$(document).ready(function() {
 
 // We take data from OpenStreetMap to use a base layer
 var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
@@ -39,8 +39,37 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 
-var url = 'http://a.tiles.mapbox.com/v3/carmencampos.example.jsonp';
+var url = 'http://c.tiles.mapbox.com/v3/carmencampos.example.jsonp';
+//var url = 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp';
 
+wax.tilejson(url,
+  function(tilejson) {
+    map = new L.Map('map')
+      //.addLayer(new wax.leaf.connector(tilejson))
+	  .addLayer(oam)
+	  .addLayer(hostedTiles)
+      .setView(new L.LatLng(47, 8), 3);
+	  
+	// Add to switch between the available layers
+	map.addControl(layersControl);
+	
+	// Add a scale to the map
+	L.control.scale().addTo(map);
+	  
+	// Add a legend
+	wax.leaf.legend(map, tilejson).appendTo(map._container);
+	 
+	// Add tooltips
+	wax.leaf.interaction()
+    	.map(map)
+    	.tilejson(tilejson)
+	// In this case, we add tooltip; when we want it to appear in a static place
+    	//.on(wax.tooltip().animate(true).parent(map._container).events());
+	// In this case, we add movetip; when we want it to appear where the mouse is
+		.on(wax.movetip().parent(map._container).events());
+});
+
+/*
 // We need Wax to add the legend and the tooltips to the map
 wax.tilejson(url, function(tilejson) {
 
@@ -51,24 +80,6 @@ wax.tilejson(url, function(tilejson) {
 	}).fitWorld()
 	// to select the latitud, longitud, and zoom that should appear in the beggining
 	.setView(new L.LatLng(47, 8), 3);
-/*
-	// To add a legend
-	wax.leaf.legend(map, tilejson).appendTo(map._container);
-	
-	// To add interaction
-	wax.leaf.interaction()
-    	.map(map)
-    	.tilejson(tilejson)
-	// In this case, we add tooltip; when we want it to appear in a static place
-    	//.on(wax.tooltip().animate(true).parent(map._container).events());
-	// In this case, we add movetip; when we want it to appear where the mouse is
-		.on(wax.movetip().parent(map._container).events());
-	
-	// Add to switch between the available layers
-	map.addControl(layersControl);
-	
-	// Add a scale to the map
-	L.control.scale().addTo(map);
 	
 });*/
 

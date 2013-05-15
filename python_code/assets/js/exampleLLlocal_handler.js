@@ -48,7 +48,7 @@ var tilejson = {
 // CAMBIAR URL A LOCAL
 //var url = 'http://a.tiles.mapbox.com/v3/carmencampos.example.jsonp';
 //var url = 'http://localhost:8000/api/tile/example'; //NOT WORK
-//var url = 'http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json';
+var url = 'http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json';
 //var url = 'http://localhost:8000/api/grid/example.json'; //NOT WORK
 //var url = 'http://localhost:8000/api/grid/example.jsonp'; //NOT WORK
 var url = '/data/example/metadata.json'; //NOT WORK
@@ -59,7 +59,7 @@ var url = '/data/example/metadata.json'; //NOT WORK
 
 wax.tilejson(url,
   function(tilejson) {
-  var map = new L.Map('map')
+  map = new L.Map('map')
     .addLayer(new wax.leaf.connector(tilejson))
     .setView(new L.LatLng(51.505, -0.09), 1);
   wax.leaf.interaction()

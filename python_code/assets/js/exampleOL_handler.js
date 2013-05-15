@@ -3,6 +3,7 @@ var map;
 
 $(document).ready(function() {
 
+
 var osm = new OpenLayers.Layer.XYZ(
     "MapQuest OSM", 
     [
@@ -16,8 +17,7 @@ var osm = new OpenLayers.Layer.XYZ(
 
 var utfgrid = new OpenLayers.Layer.UTFGrid({
     //url: "utfgrid/geography-class/${z}/${x}/${y}.grid.json",
-	//url: "http://a.tiles.mapbox.com/mapbox/1.0.0/geography-class/${z}/${x}/${y}.grid.json",
-	url: "api/tile/example/${z}/${x}/${y}.grid.json",
+	url: "http://a.tiles.mapbox.com/v3/mapbox.geography-class/${z}/${x}/${y}.grid.json",
     utfgridResolution: 4, // default is 2
     displayInLayerSwitcher: false
 });
@@ -43,7 +43,7 @@ var output = document.getElementById("output");
 var flag = document.getElementById("flag");
 
 var callback = function(infoLookup, loc, pixel) {
-    var msg = "TUTURU ";
+    var msg = "";
     if (infoLookup) {
         var info;
         for (var idx in infoLookup) {
@@ -67,6 +67,26 @@ var control = new OpenLayers.Control.UTFGrid({
 });
 
 map.addControl(control);
+
+
+});
+
+
+/*
+wax.tilejson('http://c.tiles.mapbox.com/v3/carmencampos.example.jsonp',
+function(tilejson) {
+    map = new OpenLayers.Map({
+        div: 'map',
+        controls: [
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.Attribution()
+        ],
+        layers: [
+            wax.ol.connector(tilejson)
+        ]
+    });
+    map.zoomTo(3);
+});
 
 /*
 // Use the mapbox openlayers zoom/pan control images.
@@ -96,7 +116,7 @@ map.addControl(new wax.ol.Interaction({
   formatter: function(options, data) { return data.NAME }
 }));
 */
-map.zoomTo(1);
+//map.zoomTo(1);
 
 /*
 	map = new OpenLayers.Map('map', {
@@ -216,4 +236,3 @@ function(tilejson) {
 });
 */
 
-});

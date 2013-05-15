@@ -42,14 +42,14 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 var url = 'http://a.tiles.mapbox.com/v3/cbordons.switzerland3.jsonp';
 
 // We need Wax to add the legend and the tooltips to the map
-wax.tilejson(url, function(tilejson) {
+wax.tilejson(url, 
+  function(tilejson) {
   	// here we create the map
-	map = new L.Map("map",{
-		// these are the layers that appear by default
-		layers: [oam, hostedTiles]
-	}).fitWorld()
-	// to select the latitud, longitud, and zoom that should appear in the beggining
-	.setView(new L.LatLng(47, 8), 7);
+	map = new L.Map('map')
+      //.addLayer(new wax.leaf.connector(tilejson))
+	  .addLayer(oam)
+	  .addLayer(hostedTiles)
+      .setView(new L.LatLng(47, 8), 7);
 		
 	// To add a legend
 	wax.leaf.legend(map, tilejson).appendTo(map._container);
@@ -60,7 +60,6 @@ wax.tilejson(url, function(tilejson) {
     	.tilejson(tilejson)
 	// In this case, we add tooltip; when we want it to appear in a static place
     	//.on(wax.tooltip().animate(true).parent(map._container).events());
-
 	// In this case, we add movetip; when we want it to appear where the mouse is
 	.on(wax.movetip().parent(map._container).events());
 	
