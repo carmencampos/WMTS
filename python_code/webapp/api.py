@@ -22,6 +22,11 @@ def api_tile(layer, z, x, y, ext):
 def api_grid(layer, z, x, y, ext):
 	bottle.response.content_type = "application/json"
 	return base.get_grid(layer, x, y, z, ext)
+	
+@api.route('/metadata/<layer>/metadata.json')
+def api_metadata(layer):
+	bottle.response.content_type = "application/json"
+	return base.get_metadata(layer)
 
 @api.get('/tile?service=tms&request=getTile&layer=<layer>...')
 def api_tms(layer):

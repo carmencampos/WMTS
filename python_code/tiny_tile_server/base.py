@@ -8,7 +8,7 @@ def get_tile(layer, x, y, z, ext):
 		# Connect to the database and get the cursor
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c = db.cursor()
-		closing(db.cursor)
+		#closing(db.cursor)
 	except:
 #		return None
 		# In case the connection can not be done
@@ -30,7 +30,7 @@ def get_grid(layer, x, y, z, ext):
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c1 = db.cursor()
 		c2 = db.cursor()
-		closing(db.cursor)
+		#closing(db.cursor)
 	except:
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
@@ -39,9 +39,9 @@ def get_grid(layer, x, y, z, ext):
 	c1.execute("select grid from grids where tile_column=? and tile_row=? and zoom_level=?", (x, y, z))
 	row = c1.fetchone()
 	if not row:
-		print "NO ROWWWW"
+		print "NO ROW"
 		return None
-	print "SIIIIIIIII ROWWWW"
+	print "ROW"
 	bts = bytes(row[0])
 	# Decompresses the data in string, returning a string containing the uncompressed data.
 	files = zlib.decompress(bts)
@@ -49,15 +49,56 @@ def get_grid(layer, x, y, z, ext):
 	jsonfiles = json.loads(files)
 
 # query('select key_name as key, key_json as json from grid_data where zoom_level=z and tile_column=x and tile_row=y);
-	sql = '''SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map
-		JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id
-		JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?;''' % (x, y, z)
+	#sql = ''
 	keys = []
-	for keyrow in c2.execute(sql):
+	for keyrow in c2.execute("select key_name as key, key_json as json from grid_data where zoom_level=? and tile_column=? and tile_row=?", (z, x, y)):
+	#for keyrow in c2.execute("SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?", (x, y, z)):
 		keyname, keydata = keyrow  
 		keys.append((keyname, eval(keydata))) 
 	datadict = dict(keys)
 	jsonfiles[u'data'] = datadict
-	print "okeeeey"
+	print "okey"
 	# Serialize jsonfiles to a JSON formatted string using -> http://docs.python.org/2/library/json.html#py-to-json-table
 	return json.dumps(jsonfiles)
+
+def get_metadata(layer):
+	print "accede a metadata"
+    # Connect to the database and get the cursor
+	try:
+		db = sqlite3.connect("data/%s.mbtiles" % layer)
+		c1 = db.cursor()
+		c2 = db.cursor()
+		#closing(db.cursor)
+	except:
+		# In case the connection can not be done
+		start_response('404 Not found', [('Content-Type', 'text/plain')])
+		return ["Not found: %s.mbtiles" % (layer,)]
+	# Get the metadata
+	c1.execute("select value from metadata where name='bounds'")  #grids, legend, template
+	row = c1.fetchone()
+	bts = bytes(row[0])
+	if row:
+		print "bounds: %s" % bts
+	c1.execute("select value from metadata where name='template'")  #grids, legend, template
+	row = c1.fetchone()
+	bts = bytes(row[0])
+	if row:
+		print "template: %s" % bts
+	c1.execute("select value from metadata where name='legend'")  #grids, legend, template
+	row = c1.fetchone()
+	bts = bytes(row[0])
+	if row:
+		print "legend: %s" % bts
+	c1.execute("select value from metadata where name='grids'")  #grids, legend, template
+	row = c1.fetchone()
+	if row:
+		print "hay grid"
+		bts = bytes(row[0])
+		#print "grids: %s" % bts
+		return bts
+	c1.execute("select value from metadata where name='tiles'")  #grids, legend, template
+	row = c1.fetchone()
+	if row:
+		print "hay legend"
+		bts = bytes(row[0])
+		print "tiles: %s" % bts

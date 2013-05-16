@@ -163,16 +163,15 @@ def metadataTileJson(metadata):
   return metadata
 
 # VERRRRRRRRRRRRRRRRRRRRRRRRR
-def selfUrl( $serverOnly = false ):
-    if(!isset($_SERVER['REQUEST_URI'])){
-        $serverrequri = $_SERVER['PHP_SELF']
-    }else{
-        $serverrequri = $_SERVER['REQUEST_URI']
-    }
-    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""
-    $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"])
-    if ($serverOnly) return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].$port."/"
-    return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].$port.$serverrequri
+def selfUrl(serverOnly = false):
+    if(!isset($_SERVER['REQUEST_URI'])):
+        serverrequri = $_SERVER['PHP_SELF']
+    else:
+        serverrequri = $_SERVER['REQUEST_URI']
+    s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""
+    port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"])
+    if (serverOnly) return 'http'.s.'://'.$_SERVER['SERVER_NAME'].port."/"
+    return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].port.serverrequri
 
 def doConditionalGet(timestamp):
     last_modified = time.strftime('D, d M Y H:i:s \G\M\T', time.gmtime(timestamp))

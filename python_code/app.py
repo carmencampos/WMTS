@@ -15,8 +15,8 @@ import api
 
 def get_app():
 	# load main application
-    app = web.application
-	
+    app = web.app
+
 	# load modules (sub-applications)
     app.mount(app=api.api, prefix='/api')
     
@@ -33,7 +33,3 @@ if __name__ == "__main__":
     
     bottle.debug(args.debug)
     bottle.run(app=get_app(), host='localhost', port=args.port, quiet=False, reloader=True)
-
-
-
-

@@ -20,7 +20,7 @@ var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/carmencampos.e
 	// {s} means one of the randomly chosen subdomains, and here we specificate which are the subdomains
 	// This lets you spread out the requests across multiple subdomains which helps both for sharing your 
 	// requests to the server, and to download more tiles in parallel
-	subdomains: ["a", "b", "c", "d"],
+	subdomains: ["a", "b", "c"],
 	opacity: 0.7
 });
 
@@ -39,7 +39,7 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 
-var url = 'http://c.tiles.mapbox.com/v3/carmencampos.example.jsonp';
+var url = 'http://d.tiles.mapbox.com/v3/carmencampos.example.jsonp';
 //var url = 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp';
 
 wax.tilejson(url,

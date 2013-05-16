@@ -40,7 +40,7 @@ var tilejson = {
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
     template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
     tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],
-    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],
+    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.json'],
 	//grids: ['http://c.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json'],
     formatter: function (options, data) { return "CODE: " + data.Name }
 };
@@ -48,12 +48,16 @@ var tilejson = {
 //wax.tilejson(url, 
 //function(tilejson){
   	// here we create the map
-	map = new L.map('map',{
-		center : new L.LatLng(47, 8),
-		zoom : 3,
+	map = new L.map('map')
+		//.addLayer(new wax.leaf.connector(tilejson))
+		.addLayer(mbTiles)
+		//.addLayer(oam)
+		.setView(new L.LatLng(47, 8), 5);
+		//center : new L.LatLng(47, 8),
+		//zoom : 3
 		// these are the layers that appear by default
-		layers: [oam, mbTiles]
-	});
+		//layers: [oam, mbTiles]
+	//});
 	
 	// To add a legend
 	wax.leaf.legend(map, tilejson).appendTo(map._container);

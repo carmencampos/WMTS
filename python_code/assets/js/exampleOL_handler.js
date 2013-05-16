@@ -2,11 +2,28 @@
 $(document).ready(function() {
 
 var map;
+	
+		/*
+         * Layers
+         */
 
-	var earth = new OpenLayers.Layer.XYZ(
-		"Natural Earth",
-		["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"]
-	);
+        var osm = new OpenLayers.Layer.OSM();
+        //map.addLayer(osm);
+
+        var grid_layer = new OpenLayers.Layer.UTFGrid( 
+            'Invisible UTFGrid Layer', 
+            'http://localhost:8000/api/grid/example/{z}/{x}/{y}.json',
+            {utfgridResolution: 4} // default is 2
+        );
+        //map.addLayer(grid_layer);
+
+        //map.zoomTo(1);
+		
+		var hostedTiles = new OpenLayers.Layer.XYZ("Hosted Tiles", ["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://b.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://c.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"], {
+            transitionEffect: "resize",
+            isBaseLayer: false,
+            opacity: 0.7
+        });
 
 		/*
          * Map
@@ -14,7 +31,7 @@ var map;
         map = new OpenLayers.Map({
             div: "map", 
             projection: "EPSG:900913",
-			layers: [earth],
+			layers: [hostedTiles, grid_layer, osm],
             controls: [
 				new OpenLayers.Control.Navigation({
 					dragPanOptions: {
@@ -26,22 +43,23 @@ var map;
 				new OpenLayers.Control.LayerSwitcher()
 			],
 			center: [47, 8],
-			zoom: 3
+			zoom: 5
         });
-		
-		//map.zoomToMaxExtent();
 
-        var switcherControl = new OpenLayers.Control.LayerSwitcher();
+        //map.zoomToMaxExtent();
+
+        //var switcherControl = new OpenLayers.Control.LayerSwitcher();
 
         //map.addControl(switcherControl);
 
-        switcherControl.maximizeControl();
+        //switcherControl.maximizeControl();
 		
 		//map.addControl(new OpenLayers.Control.ScaleLine());
 
         /*
          * Controls
          */
+		
         var callback = function(infoLookup) {
             var msg = "mmm ";
             if (infoLookup) {
@@ -91,23 +109,7 @@ var map;
             control = controls[el.value];
             control.activate();
         }
-
-        /*
-         * Layers
-         */
-
-        var osm = new OpenLayers.Layer.OSM();
-        map.addLayer(osm);
-
-        var grid_layer = new OpenLayers.Layer.UTFGrid( 
-            'Invisible UTFGrid Layer', 
-            "http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.json",
-            {utfgridResolution: 4} // default is 2
-        );
-        map.addLayer(grid_layer);
-
-        map.zoomTo(1);
-
+		
 });
 
 /*
