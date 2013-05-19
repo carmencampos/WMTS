@@ -1,187 +1,95 @@
 
 $(document).ready(function() {
-
-var map;
+		
+// OpenLayers.Layer.XYZ("Hosted Tiles", ["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://b.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://c.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"], {
+ 
+	var map;
 	
-		/*
-         * Layers
-         */
-
-        var osm = new OpenLayers.Layer.OSM();
-        //map.addLayer(osm);
-
-        var grid_layer = new OpenLayers.Layer.UTFGrid( 
-            'Invisible UTFGrid Layer', 
-            'http://localhost:8000/api/grid/example/{z}/{x}/{y}.json',
-            {utfgridResolution: 4} // default is 2
-        );
-        //map.addLayer(grid_layer);
-
-        //map.zoomTo(1);
-		
-		var hostedTiles = new OpenLayers.Layer.XYZ("Hosted Tiles", ["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://b.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://c.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"], {
-            transitionEffect: "resize",
-            isBaseLayer: false,
-            opacity: 0.7
-        });
-
-		/*
-         * Map
-         */
-        map = new OpenLayers.Map({
-            div: "map", 
-            projection: "EPSG:900913",
-			layers: [hostedTiles, grid_layer, osm],
-            controls: [
-				new OpenLayers.Control.Navigation({
-					dragPanOptions: {
+	var osm = new OpenLayers.Layer.OSM();
+    //map.addLayer(osm);
+	
+	var mbTiles = new OpenLayers.Layer.XYZ("Hosted Tiles", ["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://b.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png", "http://c.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"], {
+		// Existing tiles are resized on zoom to provide a visual effect of the zoom having taken place immediately.  
+		// As the new tiles become available, they are drawn over top of the resized tiles.
+		transitionEffect: "resize",
+        isBaseLayer: false,
+        opacity: 0.7
+    });
+	
+	var world_utfgrid = new OpenLayers.Layer.UTFGrid({
+		name: "UTFGrid",
+		//url: "http://localhost:8000/api/grid/example/${z}/${x}/${y}.json",
+		url: "http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.jsonp",
+		utfgridResolution: 4,
+		displayInLayerSwitcher: false
+	});
+	//map.addLayer(world_utfgrid);
+	
+	map = new OpenLayers.Map({
+        div: "map", 
+        projection: "EPSG:900913",
+		layers: [osm, mbTiles, world_utfgrid],
+        controls: [
+			// To be able to add or remove a overlay layer, or to choose which base layer will be shown
+			new OpenLayers.Control.LayerSwitcher(),
+			// Zoom with sliders and posibility to move to north, south, east, west
+            new OpenLayers.Control.PanZoomBar(),
+			// Scale indicating distances
+			new OpenLayers.Control.ScaleLine(),
+			// Posibility to move the map with the mouse
+			new OpenLayers.Control.Navigation({
+				dragPanOptions: {
 					enableKinetic: true
-					}	
-				}),
-				new OpenLayers.Control.Zoom(),
-				new OpenLayers.Control.ScaleLine(),
-				new OpenLayers.Control.LayerSwitcher()
-			],
-			center: [47, 8],
-			zoom: 5
-        });
+				}
+			})
+		] 
+    });
 
-        //map.zoomToMaxExtent();
-
-        //var switcherControl = new OpenLayers.Control.LayerSwitcher();
-
-        //map.addControl(switcherControl);
-
-        //switcherControl.maximizeControl();
-		
-		//map.addControl(new OpenLayers.Control.ScaleLine());
-
-        /*
-         * Controls
-         */
-		
-        var callback = function(infoLookup) {
-            var msg = "mmm ";
-            if (infoLookup) {
-				mas += " hay info ";
-                var info;
-                for (var idx in infoLookup) {
-                    // idx can be used to retrieve layer from map.layers[idx]
-                    info = infoLookup[idx];
-                    if (info && info.data) {
-                        msg += "[" + info.id + "] <strong>In 2005, " + 
-                            info.data.NAME + " had a population of </strong> ";
-                    }
+	var control = new OpenLayers.Control.UTFGrid({
+		layers: [world_utfgrid],
+		handlerMode: 'move',
+		// Keys of this object are layer indexes and can be used to resolve a layer in the map.layers array.  
+		// The structure of the property values depend on the data included in the underlying UTFGrid and may be 
+		// any valid JSON type.
+		callback: function(infoLookup) {
+			// do something with returned data
+			var msg = "M ";
+			if (infoLookup) {
+				var info;
+				for (var idx in infoLookup) {
+					// idx can be used to retrieve layer from map.layers[idx]
+					info = infoLookup[idx];
+					layer = map.layers[idx];
+					var a = Math.random();
+					msg += a + " name "+ layer.name + "- " + idx + " ";
+					//msg += layer.getFeatureInfo(47, 21) + " " + layer.getFeatureId(55, 29) + " ";
+					//msg += info;
+					if (info){
+						if(info.data){
+							msg += info.data.Name;
+						}
+						else
+							msg += " no infodata ";
+						if(info.keys){
+							msg += info.keys[0];
+						}
+						else
+							msg += " no infokey ";
+					}
 					else
-						msg += " no info o info data ";
-                }
-            }
-            document.getElementById("attrs").innerHTML = msg;
-        };
-            
-        var controls = {
-            move: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                handlerMode: 'move'
-            }),
-            hover: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                handlerMode: 'hover'
-            }),
-            click: new OpenLayers.Control.UTFGrid({
-                callback: callback,
-                handlerMode: 'click'
-            })
-        };
-        var control;
-        for(var key in controls) {
-            control = controls[key];
-            control.deactivate();
-            map.addControl(control);
-        }
-        controls['move'].activate();
-
-        function toggleControl(el) {
-            for(var c in controls) {
-                control = controls[c];
-                control.deactivate();
-            }
-            control = controls[el.value];
-            control.activate();
-        }
-		
-});
-
-/*
-var osm = new OpenLayers.Layer.XYZ(
-    "MapQuest OSM", 
-    [
-        "http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-        "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-        "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-        "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"
-    ],
-    {transitionEffect: "resize", wrapDateLine: true}
-);
-
-var utfgrid = new OpenLayers.Layer.UTFGrid({
-    //url: "utfgrid/geography-class/${z}/${x}/${y}.grid.json",
-	url: "http://api.tiles.mapbox.com/v3/mapbox.geography-class/${z}/${x}/${y}.grid.json",
-    utfgridResolution: 4, // default is 2
-    displayInLayerSwitcher: false
-});
-
-var map = new OpenLayers.Map({
-    div: "map", 
-    projection: "EPSG:900913",
-    numZoomLevels: 3,
-    layers: [osm, utfgrid],
-    controls: [
-        new OpenLayers.Control.Navigation({
-            dragPanOptions: {
-                enableKinetic: true
-            }
-        }),
-        new OpenLayers.Control.Zoom()
-    ],
-    center: [0, 0],
-    zoom: 1
-});
-
-var output = document.getElementById("output");
-var flag = document.getElementById("flag");
-
-var callback = function(infoLookup, loc, pixel) {
-    var msg = "mmm ";
-    if (infoLookup) {
-        var info;
-        for (var idx in infoLookup) {
-            // idx can be used to retrieve layer from map.layers[idx]
-            info = infoLookup[idx];
-			msg = "mandm ";
-            if (info && info.data) {
-                output.innerHTML = info.data.admin;
-                flag.innerHTML = "<img src='data:image/png;base64," + info.data.flag_png + "'>";
-                flag.style.left = (pixel.x + 15) + "px";
-                flag.style.top = (pixel.y + 15) + "px";
-            } else {
-                output.innerHTML = flag.innerHTML = "&nbsp;";
-            }
-        }
-    }
-};
-    
-var control = new OpenLayers.Control.UTFGrid({
-    callback: callback,
-    handlerMode: "move"
-});
-
-map.addControl(control);
-
-
-});
-
-
+						msg += " no info ";
+				}
+			}
+			document.getElementById("attrs").innerHTML = msg;
+		}
+	})
+	map.addControl(control);
+	
+	map.zoomTo(5);
+	
+}); 
+ 
+ 
 /*
 wax.tilejson('http://c.tiles.mapbox.com/v3/carmencampos.example.jsonp',
 function(tilejson) {

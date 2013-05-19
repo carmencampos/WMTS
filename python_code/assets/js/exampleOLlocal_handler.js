@@ -2,10 +2,53 @@
 $(document).ready(function() {
 	
 	var map;
+	
+	var osm = new OpenLayers.Layer.OSM();
+    //map.addLayer(osm);
+	
+	var mbTiles = new OpenLayers.Layer.TMS("Hosted Tiles", 
+			["mmm"], { //"http://localhost:8000/api/tile/example/${z}/${x}/${y}.png"], { //this.url+"?db="+db+"&z="+z+"&x="+x+"&y="+((1 << z) - y - 1);
+        // Existing tiles are resized on zoom to provide a visual effect of the zoom having taken place immediately.  
+		// As the new tiles become available, they are drawn over top of the resized tiles.
+		getURL: mbtilesURL,
+		transitionEffect: "resize",
+        isBaseLayer: false,
+        opacity: 0.7
+    });
+	function mbtilesURL(bounds) {
+            var db = "example.mbtiles";
+            var res = this.map.getResolution();
+            var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+            var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+            var z = this.map.getZoom();
+            // Deal with Bing layers zoom difference...
+            if (this.map.baseLayer.CLASS_NAME == 'OpenLayers.Layer.VirtualEarth' || this.map.baseLayer.CLASS_NAME == 'OpenLayers.Layer.Bing') {
+               z = z + 1;
+            }
+			var limit = Math.pow(2, z);
 
+		    //if (mapBounds.intersectsBounds(bounds) && z >= mapMinZoom && z <= mapMaxZoom ) {
+				x = ((x % limit) + limit) % limit;
+				y = Math.pow(2,z) - y - 1;
+				return "http://localhost:8000/api/tile/example/" + z + "/" + x + "/" + y + ".png";
+			//}
+            //return this.url+"?db="+db+"&z="+z+"&x="+x+"&y="+((1 << z) - y - 1);   
+			//return "http://localhost:8000/api/tile/example/"+z+"/"+x+"/"+y+".png";
+        }
+	//map.addLayer(mbTiles);
+	
+	var world_utfgrid = new OpenLayers.Layer.UTFGrid({
+		name: "UTFGrid",
+		url: "http://localhost:8000/api/grid/example/${z}/${x}/${y}.json",
+		utfgridResolution: 4,
+		displayInLayerSwitcher: false
+	});
+	//map.addLayer(world_utfgrid);
+	
 	map = new OpenLayers.Map({
         div: "map", 
         projection: "EPSG:900913",
+		layers: [osm, mbTiles, world_utfgrid],
         controls: [
 			// To be able to add or remove a overlay layer, or to choose which base layer will be shown
 			new OpenLayers.Control.LayerSwitcher(),
@@ -18,51 +61,55 @@ $(document).ready(function() {
 				dragPanOptions: {
 					enableKinetic: true
 				}
-			}) 
+			})
 		] 
     });
-	
-	map.zoomTo(5);
-	
-	var osm = new OpenLayers.Layer.OSM();
-    map.addLayer(osm);
-	
-	/*var mbTiles = new OpenLayers.Layer.XYZ("Hosted Tiles", ["http://localhost:8000/api/tile/example/${z}/${x}/${y}.png"], {
-        // Existing tiles are resized on zoom to provide a visual effect of the zoom having taken place immediately.  
-		// As the new tiles become available, they are drawn over top of the resized tiles.
-		transitionEffect: "resize",
-        isBaseLayer: false,
-        opacity: 0.7
-    });*/
-	//map.addLayer(mbTiles);
-	
-	var world_utfgrid = new OpenLayers.Layer.UTFGrid({
-		//url: "/tiles/world_utfgrid/${z}/${x}/${y}.json",
-		url: "http://localhost:8000/api/grid/example/${z}/${x}/${y}.json",
-		utfgridResolution: 4
-		//displayInLayerSwitcher: false
-	});
-	map.addLayer(world_utfgrid);
 
 	var control = new OpenLayers.Control.UTFGrid({
 		layers: [world_utfgrid],
 		handlerMode: 'move',
-		callback: function(dataLookup) {
+		// Keys of this object are layer indexes and can be used to resolve a layer in the map.layers array.  
+		// The structure of the property values depend on the data included in the underlying UTFGrid and may be 
+		// any valid JSON type.
+		callback: function(infoLookup) {
 			// do something with returned data
-			document.getElementById("attrs").innerHTML = "hola q tal";
+			var msg = "M ";
+			if (infoLookup) {
+				var info;
+				for (var idx in infoLookup) {
+					// idx can be used to retrieve layer from map.layers[idx]
+					info = infoLookup[idx];
+					layer = map.layers[idx];
+					var a = Math.random();
+					msg += a + " name "+ layer.name + "- " + idx + " ";
+					//msg += layer.getFeatureInfo(47, 21) + " " + layer.getFeatureId(55, 29) + " ";
+					//msg += info;
+					if (info){
+						if(info.data){
+							msg += info.data.Name;
+						}
+						else
+							msg += " no infodata ";
+						if(info.keys){
+							msg += info.keys[0];
+						}
+						else
+							msg += " no infokey ";
+					}
+					else
+						msg += " no info ";
+				}
+			}
+			document.getElementById("attrs").innerHTML = msg;
 		}
 	})
 	map.addControl(control);
 	
+	map.zoomTo(5);
+	
 });
 
 /*
-
-        map = new OpenLayers.Map({
-            div: "map", 
-            projection: "EPSG:900913",
-            controls: [] // No default controls; no pan zoom for demo
-        });
 
         var callback = function(infoLookup) {
             var msg = "mmm ";
@@ -118,61 +165,14 @@ $(document).ready(function() {
             control.activate();
         }
 
-        var osm = new OpenLayers.Layer.OSM();
-        map.addLayer(osm);
 
-        var grid_layer = new OpenLayers.Layer.UTFGrid( 
-            'Invisible UTFGrid Layer', 
-            "http://localhost:8000/api/grid/example/{z}/{x}/{y}.json",
-            {utfgridResolution: 4} // default is 2
-        );
-        map.addLayer(grid_layer);
-
-        map.zoomTo(5);
-
-});
-	/*
-        var example = new OpenLayers.Layer.XYZ("ABC", ["http://localhost:8000/api/tile/example/${z}/${x}/${y}.png"], {
-            tms: true,
-			attribution: "blabla",
-            transitionEffect: "resize"
-        });
-		
-	map = new OpenLayers.Map('map', {
-          projection: new OpenLayers.Projection("EPSG:900913")
-      });
-
-      //var base_layer = new OpenLayers.Layer.OSM();
-
-      var base_layer = new OpenLayers.Layer.TMS(
-          'TMS street_layer',
-          '/data/',
-          {layername: 'example',
-           type: 'png', isBaseLayer: true}  //false
-      );
-
-      map.addLayer(base_layer);
-      //map.addLayer(overlay_layer);
-      map.zoomToMaxExtent();
-		
 		/* var layer = new OpenLayers.Layer.TMS(
     "My Layer", // name for display in LayerSwitcher
     "http://tilecache.osgeo.org/wms-c/Basic.py/", // service endpoint
     {layername: "basic", type: "png"} // required properties
-);*/
 
-	/*	var example = new OpenLayers.Layer.TMS("ABC", 
-			"http://localhost:8000/api/tile/example/${z}/${x}/${y}.png"], 
-			{
-            
-        });*/
-		
-	/*	map = new OpenLayers.Map('map', {
-            projection: "EPSG:900913",
-            layers: [example]
-        });
-		
-		layer = new OpenLayers.Layer.TMS( "TMS",
+
+	layer = new OpenLayers.Layer.TMS( "TMS",
                     "http://tilecache.osgeo.org/wms-c/Basic.py/", {layername: 'basic', type:'png'} );
             map.addLayer(layer);
 			

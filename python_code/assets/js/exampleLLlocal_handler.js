@@ -1,7 +1,7 @@
 
-var map;
-
 $(document).ready(function() {
+
+var map;
 
 // we take data from OpenStreetMap to use a base layer
 var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
@@ -51,7 +51,7 @@ var tilejson = {
 	map = new L.map('map')
 		//.addLayer(new wax.leaf.connector(tilejson))
 		.addLayer(mbTiles)
-		//.addLayer(oam)
+		.addLayer(oam)
 		.setView(new L.LatLng(47, 8), 5);
 		//center : new L.LatLng(47, 8),
 		//zoom : 3
