@@ -4,7 +4,8 @@ import python_server.py
 
 def get_tile_wmts(mylayer, x, y, z):
 
-	layer = mylayer;
+	service = "WMTS"
+	layer = mylayer
 
 	python_wmts = bottle.Bottle()
 
@@ -16,7 +17,7 @@ def get_tile_wmts(mylayer, x, y, z):
 	<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 	  <!-- Service Identification -->
 	  <ows:ServiceIdentification>
-		<ows:Title>Tiny Tile Server</ows:Title>
+		<ows:Title>mytitle</ows:Title>
 		<ows:ServiceType>OGC WMTS</ows:ServiceType>
 		<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
 	  </ows:ServiceIdentification>

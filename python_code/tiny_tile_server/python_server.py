@@ -6,11 +6,11 @@ import sqlite3
 import hashlib
 
 config_url = ["http://localhost:8000/"]
-
-# VERRRRRRRRR   86   167  185
-service = $_GET['service'] if ('service' in $_GET) else ""
-layer = $_GET['layer'] if ('layer' in $_GET) else ""
-# callback = $_GET['callback'] if ('callback' in $_GET) else ""
+mytitle = "Tiny Tile Server"
+ 
+service = python_wmts.service
+layer = python_wmts.layer
+# callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
 
 # CORS header
 print 'Access-Control-Allow-Origin: *'
@@ -21,7 +21,7 @@ print 'Access-Control-Allow-Origin: *'
 # ------------
 if(service == 'test'):
     bottle.response.content_type = "text/plain; charset=utf-8"
-    print "Tiny Tile Server at %s" % config_url
+    print title + " at " + config_url
 
 	
 # ------------
@@ -34,9 +34,9 @@ if(service == 'html'):
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title><% print "Tiny Tile Server" %></title>
+  <title><% print title %></title>
 <html>
-<h1>Welcome to <% print "Tiny Tile Server" %></h1>
+<h1>Welcome to <% print title %></h1>
 <p>This server distributes maps to desktop, web, and mobile applications.</p>
 <p>The mapping data are available as OpenGIS Web Map Tiling Service (OGC WMTS), OSGEO Tile Map Service (TMS), and popular XYZ urls described with TileJSON metadata.</p>
 
@@ -162,7 +162,7 @@ def metadataTileJson(metadata):
   metadata['tiles'] = tiles
   return metadata
 
-# VERRRRRRRRRRRRRRRRRRRRRRRRR
+# VER do we need this method?
 def selfUrl(serverOnly = false):
     if(!isset($_SERVER['REQUEST_URI'])):
         serverrequri = $_SERVER['PHP_SELF']
@@ -173,14 +173,15 @@ def selfUrl(serverOnly = false):
     if (serverOnly) return 'http'.s.'://'.$_SERVER['SERVER_NAME'].port."/"
     return 'http'.$s.'://'.$_SERVER['SERVER_NAME'].port.serverrequri
 
+# VER do we need this method?
 def doConditionalGet(timestamp):
+	# Bottle automatically adds a Last-Modified header and even supports the If-Modified-Since header
     last_modified = time.strftime('D, d M Y H:i:s \G\M\T', time.gmtime(timestamp))
     etag = '"'.hashlib.md5(last_modified).hexdigest().'"'
     # Send the headers
-    print "Last-Modified: last_modified"
+    #print "Last-Modified: last_modified"
     print "ETag: etag"
-	# VERRRRRRRRRRRR
-    #See if the client has provided the required headers
+	#See if the client has provided the required headers
     #if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
     #    stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
     #    false

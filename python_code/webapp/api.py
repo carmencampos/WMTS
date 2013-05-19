@@ -28,13 +28,13 @@ def api_metadata(layer):
 	bottle.response.content_type = "application/json"
 	return base.get_metadata(layer)
 
-@api.get('/tile?service=tms&request=getTile&layer=<layer>...')
-def api_tms(layer):
-	bottle.response.content_type = "application/xml"
-	return python_tms.get_tile_tms(layer)
-
 #http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}');
 @api.get('/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=<layer>&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix=<z>&TileRow=<y>&TileCol=<x>')
 def api_wmts(layer, x, y, z):
 	bottle.response.content_type = "application/xml"
 	return python_wmts.get_tile_wmts(layer)
+
+@api.get('/tile?service=tms&request=getTile&layer=<layer>...')
+def api_tms(layer):
+	bottle.response.content_type = "application/xml"
+	return python_tms.get_tile_tms(layer)

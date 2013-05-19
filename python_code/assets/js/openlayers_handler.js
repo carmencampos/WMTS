@@ -1,97 +1,56 @@
 
-var map;
-
 $(document).ready(function() {
 
-var osm = new OpenLayers.Layer.XYZ(
-    "MapQuest OSM", 
-    [
-        "http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-        "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-        "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-        "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"
-    ],
-    {transitionEffect: "resize", wrapDateLine: true}
-);
+var map;
 
-var earth = new OpenLayers.Layer.XYZ(
-	"Natural Earth",
-		["http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.png"]
-	);
-
-var utfgrid = new OpenLayers.Layer.UTFGrid({
-    url: "http://a.tiles.mapbox.com/v3/carmencampos.example/${z}/${x}/${y}.grid.json",
-    utfgridResolution: 4, // default is 2
-    displayInLayerSwitcher: false
-});
-
-var map = new OpenLayers.Map({
-    div: "map", 
-    projection: "EPSG:900913",
-    numZoomLevels: 3,
-    layers: [osm, earth, utfgrid],
-    controls: [
-        new OpenLayers.Control.Navigation({
-            dragPanOptions: {
-                enableKinetic: true
-            }
-        }),
-        new OpenLayers.Control.Zoom()
-    ],
-    center: [0, 0],
-    zoom: 1
-});
-
-var output = document.getElementById("output");
-var flag = document.getElementById("flag");
-
-var callback = function(infoLookup, loc, pixel) {
-    var msg = "mmm ";
-    if (infoLookup) {
-        var info;
-        for (var idx in infoLookup) {
-            // idx can be used to retrieve layer from map.layers[idx]
-            info = infoLookup[idx];
-            if (info && info.data) {
-                output.innerHTML = "Hola"; //info.data.admin;
-                //flag.innerHTML = "<img src='data:image/png;base64," + info.data.flag_png + "'>";
-                //flag.style.left = (pixel.x + 15) + "px";
-                //flag.style.top = (pixel.y + 15) + "px";
-            } else {
-                output.innerHTML = "Adios"; //flag.innerHTML = "&nbsp;";
-            }
-        }
-    }
-};
-    
-var control = new OpenLayers.Control.UTFGrid({
-    callback: callback,
-    handlerMode: "move"
-});
-
-map.addControl(control);
-
-/*
+	/*
     var example = new OpenLayers.Layer.XYZ("ABC", ["http://localhost:8000/api/tile/example/${z}/${x}/${y}.png"], {
             tms: true,
 			attribution: "blabla",
             transitionEffect: "resize"
         });
 		
-	var wmts = new OpenLayers.Layer.WMTS({
+	var wmtsmio = new OpenLayers.Layer.WMTS({
 		name: "My WMTS Layer",
 		url: "http://a.tiles.mapbox.com/v3/carmencampos",
 		layer: "example",
 		style: "default",
 		matrixSet: "googlemapscompatible"
 	});
-		
-	map = new OpenLayers.Map('map', {
-          projection: new OpenLayers.Projection("EPSG:900913")
-    });
+	*/
+	
+    map = new OpenLayers.Map({
+        div: "map",
+        projection: "EPSG:900913"
+    });    
+    
+    var osm = new OpenLayers.Layer.OSM();
 
-    var base_layer = new OpenLayers.Layer.OSM();
+    // If tile matrix identifiers differ from zoom levels (0, 1, 2, ...)
+    // then they must be explicitly provided.
+    var matrixIds = new Array(26);
+    for (var i=0; i<26; ++i) {
+        matrixIds[i] = "EPSG:900913:" + i;
+    }
 
+    var wmts = new OpenLayers.Layer.WMTS({
+        name: "Medford Buildings",
+        //url: "http://v2.suite.opengeo.org/geoserver/gwc/service/wmts/",
+		url: "http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}",
+        layer: "medford:buildings",
+        matrixSet: "EPSG:900913",
+        matrixIds: matrixIds,
+        format: "image/png",
+        style: "_null",
+        opacity: 0.7,
+        isBaseLayer: false
+    });                
+
+    map.addLayers([wmts]);
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+    map.setCenter(new OpenLayers.LonLat(-13677832, 5213272), 13);
+
+    
     /*var base_layer = new OpenLayers.Layer.TMS(
         'TMS street_layer',
         '/data/',
