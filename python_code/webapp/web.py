@@ -30,7 +30,7 @@ def web_leaflet1():
 	return dict()
 
 @app.route('/exampleLLlocal')
-@bottle.view('exampleLLlocaL')
+@bottle.view('exampleLLlocal')
 def web_leaflet2():
 	return dict()
 
