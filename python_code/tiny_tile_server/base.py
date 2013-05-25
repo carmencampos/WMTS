@@ -19,11 +19,12 @@ def get_tile(layer, x, y, z, ext):
 	res = c.fetchone()
 	if res:
 		# In case there are tiles, print them with their necesary headers
+		#get_grid(layer, x, y, z)
 		return bytes(res[0])
 	return None
 
 
-def get_grid(layer, x, y, z, ext):
+def get_grid(layer, x, y, z): #, ext):
 	print "accede a grid"
     # Connect to the database and get the cursor
 	try:
@@ -36,7 +37,8 @@ def get_grid(layer, x, y, z, ext):
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
 		return ["Not found: %s.mbtiles" % (layer,)]
 	# Get the utfgrid info from the database, using the zoom and the coordinates we got previously
-	c1.execute("select grid from grids where tile_column=? and tile_row=? and zoom_level=?", (x, y, z))
+	c1.execute("select grid from grids where tile_column=? and tile_row=? and zoom_level=?", (31, 39, 6)) #(x, y, z))
+	#c1.execute("select * from grids")
 	row = c1.fetchone()
 	if not row:
 		print "NO ROW"
@@ -47,23 +49,23 @@ def get_grid(layer, x, y, z, ext):
 	files = zlib.decompress(bts)
 	# Deserialize files to a Python object -> http://docs.python.org/2/library/json.html#json-to-py-table
 	jsonfiles = json.loads(files)
-	# return jsonfiles
+	#return jsonfiles
 
 	# Get the data
-	# query('select key_name as key, key_json as json from grid_data where zoom_level=z and tile_column=x and tile_row=y);
 	keys = []
-	for keyrow in c2.execute("select key_name as key, key_json as json from grid_data where zoom_level=? and tile_column=? and tile_row=?", (z, x, y)):
-	# for keyrow in c2.execute("SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?", (x, y, z)):
+	#for keyrow in c2.execute("select key_name as key, key_json as json from grid_data where zoom_level=? and tile_column=? and tile_row=?", (z, x, y)):
+	for keyrow in c2.execute("SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?", (31, 39, 6)): #(x, y, z)):
 		keyname, keydata = keyrow  
 		keys.append((keyname, eval(keydata))) 
 	datadict = dict(keys)
 	jsonfiles[u'data'] = datadict
 	# return jsonfiles
-	print "okey"
+	print "okey Z:" + z + "x,y" + x + y
 	# Serialize jsonfiles to a JSON formatted string using -> http://docs.python.org/2/library/json.html#py-to-json-table
 	res = json.dumps(jsonfiles)
-	#res.append("hola que tal")
-	return res
+	# return res
+	sol = "grid(%s)" % res
+	return sol
 
 
 def get_metadata(layer):

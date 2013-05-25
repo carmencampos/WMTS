@@ -14,7 +14,7 @@ var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg"
 var mbTiles = new L.tileLayer("http://localhost:8000/api/tile/{s}/{z}/{x}/{y}.png", {
 	tms: true,
 	minZoom: 2,
-	subdomains : ["example"],
+	subdomains : ["geography-class"], //example
 	opacity: 0.7
 });
 
@@ -39,8 +39,8 @@ var tilejson = {
 	scheme: 'tms',
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
     template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
-    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],
-    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.json'],
+    tiles: ['http://localhost:8000/api/tile/geography-class/{z}/{x}/{y}.png'],  //example
+    grids: ['http://localhost:8000/api/grid/geography-class/{z}/{x}/{y}.grid.json'],  //example
 	//grids: ['http://c.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json'],
     formatter: function (options, data) { return "CODE: " + data.Name }
 };
@@ -52,7 +52,7 @@ var tilejson = {
 		//.addLayer(new wax.leaf.connector(tilejson))
 		.addLayer(mbTiles)
 		.addLayer(oam)
-		.setView(new L.LatLng(47, 8), 5);
+		.setView(new L.LatLng(50, 11), 5);
 		//center : new L.LatLng(47, 8),
 		//zoom : 3
 		// these are the layers that appear by default
@@ -70,7 +70,7 @@ var tilejson = {
     	//.on(wax.tooltip().animate(true).parent(map._container).events());
 	// In this case, we add movetip; when we want it to appear where the mouse is
 		.on(wax.movetip().parent(map._container).events());
-
+	
 	// Add to switch between the available layers
 	map.addControl(layersControl);
 	
