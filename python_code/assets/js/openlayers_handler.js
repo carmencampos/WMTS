@@ -17,6 +17,20 @@ var map;
 		style: "default",
 		matrixSet: "googlemapscompatible"
 	});
+	
+	
+	var wmts = new OpenLayers.Layer.WMTS({
+	        name: "chicago wmts",
+			requestEncoding: 'REST',
+			url: "http://localhost:8888/tileserverdemo/chicago/{TileMatrix}/{TileCol}/{TileRow}.png",
+	        layer: "chicago",
+	        matrixSet: "GoogleMapsCompatible",
+	        format: "image/png",
+	        style: "_null",
+	        opacity: 1.0,
+	        isBaseLayer: false,
+	    });
+	
 	*/
 	
     map = new OpenLayers.Map({

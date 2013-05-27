@@ -1,11 +1,15 @@
 
 import bottle
-import python_server.py
-
+import python_server
+	
 def get_tile_wmts(mylayer, x, y, z):
 
 	service = "WMTS"
 	layer = mylayer
+
+	TileMatrix = z
+	TileCol = x
+	TileRow = y
 
 	python_wmts = bottle.Bottle()
 
@@ -13,7 +17,7 @@ def get_tile_wmts(mylayer, x, y, z):
 
 	bottle.response.content_type = "application/xml"
 
-	print "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+	print """<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
 	<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 	  <!-- Service Identification -->
 	  <ows:ServiceIdentification>
@@ -65,9 +69,9 @@ def get_tile_wmts(mylayer, x, y, z):
 		  </ows:DCP>
 		</ows:Operation>
 	  </ows:OperationsMetadata>
-	  <Contents>
+	  <Contents>"""
 
-	<%
+#	<%
 	for m in maps:
 		basename = m['basename']
 		title = m['name'] if ('name' in m) else basename
@@ -82,8 +86,9 @@ def get_tile_wmts(mylayer, x, y, z):
 			(minx, miny) = mercator.LatLonToMeters(bounds[1], bounds[0])
 			(maxx, maxy) = mercator.LatLonToMeters(bounds[3], bounds[2])
 			bounds3857 = array(minx, miny, maxx, maxy)
-	%>
+#	%>
 
+	print	"""<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
 		<Layer>
 		  <ows:Title><% print title %></ows:Title>
 		  <ows:Identifier><% print basename %></ows:Identifier>
@@ -457,4 +462,4 @@ def get_tile_wmts(mylayer, x, y, z):
 
 	  </Contents>
 	  <ServiceMetadataURL xlink:href="<% print config_url[0] %>wmts/1.0.0/WMTSCapabilities.xml"/>
-	</Capabilities>
+	</Capabilities>"""

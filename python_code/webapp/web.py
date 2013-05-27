@@ -18,6 +18,16 @@ def web_main():
 @bottle.view('leaflet')
 def web_leaflet():
 	return dict()#title="Leaflet Example")#, menu="leaflet")
+
+@app.route('/leafletPRUEBAS')
+@bottle.view('leafletPRUEBAS')
+def web_leaflet():
+	return dict()
+	
+@app.route('/leafletPRUEBASutfgrid')
+@bottle.view('leafletPRUEBASutfgrid')
+def web_leaflet():
+	return dict()
 	
 @app.route('/openlayers')
 @bottle.view('openlayers')

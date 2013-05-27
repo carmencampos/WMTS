@@ -11,8 +11,8 @@ $(document).ready(function() {
 
 		//var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.grid.json?callback={cb}');
 		//var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json?callback={cb}');
-		//var utfGrid = new L.UtfGrid('http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json?callback={cb}');
-		var utfGrid = new L.UtfGrid('http://localhost:8000/api/grid/geography-class/{z}/{x}/{y}.grid.json?callback={cb}');
+		var utfGrid = new L.UtfGrid('http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json?callback={cb}');
+		//var utfGrid = new L.UtfGrid('http://localhost:8000/api/grid/geography-class/{z}/{x}/{y}.grid.json?callback={cb}');
 
 grid = function (e){
 	//alert('Bar');
@@ -48,7 +48,7 @@ grid = function (e){
 		});
 
 		var map = L.map('map')
-				.setView([47, 8], 7)
+				.setView([50, 11], 7)
 				.addLayer(cloudmade)
 				.addLayer(utfGrid);
 

@@ -1,8 +1,39 @@
 
-var map;
-
 $(document).ready(function() {
 
+	var map;
+	
+	//'http://{s}.geospatial.intergraph.com/erdas-iws/ogc/wmts?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=virtualmosaic&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatibleext2:epsg:3857&TileMatrix={z}&TileRow={y}&TileCol={x}', 
+	var virtual = L.tileLayer('http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}', 
+	{
+		//subdomains: ['demo-apollo','demo-ap2','demo-ap3','demo-ap4']
+		//attribution: 'Imagery served via ERDAS APOLLO Essentials, data for demonstration purposes only',
+		//maxZoom: 26
+	});
+	
+	
+	/*var wmts1 = new OpenLayers.Layer.WMTS({
+        name: "Medford Buildings",
+        //url: "http://v2.suite.opengeo.org/geoserver/gwc/service/wmts/",
+		url: "http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}",
+        layer: "medford:buildings",
+        matrixSet: "EPSG:900913",
+        matrixIds: matrixIds,
+        format: "image/png",
+        style: "_null",
+        opacity: 0.7,
+        isBaseLayer: false
+    });*/
+
+	var wmts2 = L.tileLayer('<ServiceRoot>?SERVICE=WMTS&REQUEST=GetTile&VERSION=[version]&Layer=[layername]&Format=image/png&TileMatrixSet[MatrixsetName]=&TileMatrix={z}&TileRow={x}&TileCol={y}');
+
+	var map = L.map('map', {
+		center: [0, 0],
+		zoom: 1,
+		layers: [virtual]
+	});
+	
+/*
 //var url = 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp';
 //var url = 'http://api.tiles.mapbox.com/v3/carmencampos.example.jsonp'
 
@@ -40,66 +71,6 @@ var tilejson = {
 		.tilejson(tilejson)
 		.on(wax.tooltip().animate(true).parent(map._container).events());
 //});
-
-/*
-wax.tilejson('http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp',
-  function(tilejson) {
-  var map = new L.Map('map')
-    .addLayer(new wax.leaf.connector(tilejson))
-    .setView(new L.LatLng(51.505, -0.09), 1);
-  wax.leaf.interaction()
-    .map(map)
-    .tilejson(tilejson)
-    .on('on', function(o) {
-        if (o.e.type !== 'mousemove') {
-            // create a marker in the given location and add it to the map
-            var marker = new L.Marker(map.mouseEventToLatLng(o.e));
-            map.addLayer(marker);
-
-            // attach a given HTML content to the marker and immediately open it
-            marker.bindPopup(o.formatter({ format: 'teaser' }, o.data)).openPopup();
-        }
-    });
-});
-
-
-/*	// We take data from OpenStreetMap to use a base layer
-	var oam = new L.tileLayer("http://localhost:8000/api/tile/{s}/{z}/{x}/{y}.png", {
-		tms: true,
-		attribution : "asdfdsf",
-		subdomains : ["example"]
-	});
-
-	map = new L.map('map',{  //here
-		// these are the layers that appear by default
-		center : new L.LatLng(39.73, -104.99),
-		zoom : 7,
-		layers: [oam]
-	});
-	
-/*var url = 'http://a.tiles.mapbox.com/v3/carmencampos/example.jsonp';
-
-// We need Wax to add the legend and the tooltips to the map
-wax.tilejson(url, function(tilejson) {
-	// here we create the map
-	map = new L.Map("map",{
-		// these are the layers that appear by default
-		layers: [oam]
-	}).fitWorld()
-	// to select the latitud, longitud, and zoom that should appear in the beggining
-	.setView(new L.LatLng(47, 8), 7);
-		
-	// To add a legend
-	wax.leaf.legend(map, tilejson).appendTo(map._container);
-	
-	wax.leaf.interaction()
-    	.map(map)
-    	.tilejson(tilejson)
-	// In this case, we add movetip; when we want it to appear where the mouse is
-	.on(wax.movetip().parent(map._container).events());
-	
-	// Add to switch between the available layers
-	map.addControl(layersControl);
-});*/
+*/
 
 });
