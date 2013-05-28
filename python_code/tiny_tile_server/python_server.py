@@ -6,12 +6,13 @@ import sqlite3
 import hashlib
 
 import python_wmts
+from python_wmts import *
 
 config_url = ["http://localhost:8000/"]
 title = "Tiny Tile Server"
  
-service = python_wmts.service
-layer = python_wmts.layer
+mylayer = "example" #python_wmts.layer
+service = "WMTS" #python_wmts.service
 # callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
 
 maps = []
@@ -79,8 +80,8 @@ else:
 if(service == 'json'):
     bottle.response.content_type = "application/json; charset=utf-8"
   
-    if(layer):
-        output = metadataTileJson(layer(layer))
+    if(mylayer):
+        output = metadataTileJson(mylayer(mylayer))
     else:
         maps = maps()
         tilejsons = []
@@ -98,24 +99,25 @@ if(service == 'json'):
 # INTERNAL FUNCTIONS:
 
 def maps():
-    maps = maps()
+    print "creating maps"
+    maps = []
     # Scan all directories with metadata.json
-    mjs = glob.glob('*/metadata.json')
-    if(mjs): 
-	    for mj in mjs:
- 		    maps.append(metadataFromMetadataJson(mj))
+    #mjs = glob.glob('*/metadata.json')
+    #if(mjs): 
+	#    for mj in mjs:
+ 	#	    maps.append(metadataFromMetadataJson(mj))
     # Scan all mbtiles
-    mbts = glob.glob('*.mbtiles')
-    if(mbts):
-	    for mbt in mbts:
-		    maps.append(metadataFromMbtiles(mbt))
+    #mbts = glob.glob('*.mbtiles')
+    #if(mbts):
+	#    for mbt in mbts:
+    maps.append(metadataFromMbtiles())
     return maps
 
-def layer(layer):
-    if((layer.find('.mbtiles')) == -1):
-        return metadataFromMetadataJson(layer.append('/metadata.json'))
+def layer(mylayer):
+    if((mylayer.find('.mbtiles')) == -1):
+        return metadataFromMetadataJson(mylayer.append('/metadata.json'))
     else:
-        return metadataFromMbtiles(layer)
+        return metadataFromMbtiles(mylayer)
 
 def metadataFromMetadataJson(jsonFileName):
 	metadata = json.load(open(jsonFileName).read())
@@ -123,29 +125,34 @@ def metadataFromMetadataJson(jsonFileName):
 	metadata['basename'] = jsonFileName.replace('/metadata.json', '')
 	return metadata
 
-def metadataFromMbtiles(mbt):
-	metadata = []
+def metadataFromMbtiles():
+	print "layer %s" % mylayer
+	metadata = {}
 	try:
 		# Connect to the database and get the cursor
-		db = sqlite3.connect("data/%s.mbtiles" % layer)
+		db = sqlite3.connect("data/%s.mbtiles" % mylayer)
 		c = db.cursor()
 		# closing(db.cursor)
 	except:
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
-		return ["Not found: %s.mbtiles" % (layer,)]
-	c.execute("select * from metadata")
-	res = c.fetchall()
-	for r in res:
-		metadata.append(r['name'], r['value'])
+		return ["Not found: %s.mbtiles" % (mylayer,)]
+	res = c.execute("select * from metadata")
+	result = c.fetchall()
+	for r in result:
+		a = r[0] #r['name']
+		b = r[1] #r['value']
+		#print "eeeeeeooooooo %s yyy %s" % (a, b)
+		##sol = dict(a, b)
+		metadata[a] = b
 	metadata = metadataValidation(metadata)
-	metadata['basename'] = mbt
+	metadata['basename'] = mylayer
 	return metadata
 
 def metadataValidation(metadata):
 	if('bounds' in metadata):
   	#TODO:Calculate bounds from tiles if bounds is missing - with GlobalMercator
-		metadata['bounds'] = map('floatval', metadata['bounds'].spilt(','))
+		metadata['bounds'] = metadata['bounds'].split(',')
 	if not('profile' in metadata):
 		metadata['profile'] = 'mercator'
 	#TODO: detect format, minzoom, maxzoom, thumb

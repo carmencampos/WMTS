@@ -1,11 +1,21 @@
 
 import bottle
+# we need the functions
 import python_server
+from python_server import *
+
+global service
+global layer
+layer = "empty"
 	
 def get_tile_wmts(mylayer, x, y, z):
 
-	service = "WMTS"
+# <% print config_url[0] %> -> config_url[0]
+
+	mercator = GlobalMercator()
+
 	layer = mylayer
+	mytitle = "Tiny Tile Server"
 
 	TileMatrix = z
 	TileCol = x
@@ -13,15 +23,36 @@ def get_tile_wmts(mylayer, x, y, z):
 
 	python_wmts = bottle.Bottle()
 
-	maps = maps()
+	global mymaps
+	#mymaps = python_server.maps()
+	mymaps = maps()
+
+	# for m in mymaps:
+	m = mymaps[0]	
+	basename = m['basename']
+	title = m['name'] if ('name' in m) else basename
+	profile = m['profile']
+	bounds = m['bounds']
+	print bounds
+	print bounds[0]
+	print bounds[1]
+	format = m['format']
+	mime = 'image/jpeg' if (format == 'jpg') else 'image/png'
+	if (profile == 'geodetic'):
+		tileMatrixSet = "WGS84"
+	else:
+		tileMatrixSet = "GoogleMapsCompatible"
+		(minx, miny) = mercator.LatLonToMeters(bounds[1], bounds[0])
+		(maxx, maxy) = mercator.LatLonToMeters(bounds[3], bounds[2])
+		bounds3857 = [minx, miny, maxx, maxy]
 
 	bottle.response.content_type = "application/xml"
 
-	print """<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-	<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+	print "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+	return """<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 	  <!-- Service Identification -->
 	  <ows:ServiceIdentification>
-		<ows:Title>mytitle</ows:Title>
+		<ows:Title>"""+ mytitle +"""</ows:Title>
 		<ows:ServiceType>OGC WMTS</ows:ServiceType>
 		<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
 	  </ows:ServiceIdentification>
@@ -30,7 +61,7 @@ def get_tile_wmts(mylayer, x, y, z):
 		<ows:Operation name="GetCapabilities">
 		  <ows:DCP>
 			<ows:HTTP>
-			  <ows:Get xlink:href="<% print config_url[0] %>wmts/1.0.0/WMTSCapabilities.xml">
+			  <ows:Get xlink:href="config_url[0]wmts/1.0.0/WMTSCapabilities.xml">
 				<ows:Constraint name="GetEncoding">
 				  <ows:AllowedValues>
 					<ows:Value>RESTful</ows:Value>
@@ -38,7 +69,7 @@ def get_tile_wmts(mylayer, x, y, z):
 				</ows:Constraint>
 			  </ows:Get>
 			  <!-- add KVP binding in 10.1 -->
-			  <ows:Get xlink:href="<% print config_url[0] %>wmts?">
+			  <ows:Get xlink:href="config_url[0]wmts?"> 
 				<ows:Constraint name="GetEncoding">
 				  <ows:AllowedValues>
 					<ows:Value>KVP</ows:Value>
@@ -51,14 +82,14 @@ def get_tile_wmts(mylayer, x, y, z):
 		<ows:Operation name="GetTile">
 		  <ows:DCP>
 			<ows:HTTP>
-			  <ows:Get xlink:href="<% print config_url[0] %>wmts/">
+			  <ows:Get xlink:href="config_url[0]wmts/">
 				<ows:Constraint name="GetEncoding">
 				  <ows:AllowedValues>
 					<ows:Value>RESTful</ows:Value>
 				  </ows:AllowedValues>
 				</ows:Constraint>
 			  </ows:Get>
-			  <ows:Get xlink:href="<% print config_url[0] %>wmts?">
+			  <ows:Get xlink:href="config_url[0]wmts?">
 				<ows:Constraint name="GetEncoding">
 				  <ows:AllowedValues>
 					<ows:Value>KVP</ows:Value>
@@ -72,36 +103,30 @@ def get_tile_wmts(mylayer, x, y, z):
 	  <Contents>"""
 
 #	<%
-	for m in maps:
-		basename = m['basename']
-		title = m['name'] if ('name' in m) else basename
-		profile = m['profile']
-		bounds = m['bounds']
-		format = m['format']
-		mime = 'image/jpeg' if (format == 'jpg') else 'image/png'
-		if (profile == 'geodetic'):
-			tileMatrixSet = "WGS84"
-		else:
-			tileMatrixSet = "GoogleMapsCompatible"
-			(minx, miny) = mercator.LatLonToMeters(bounds[1], bounds[0])
-			(maxx, maxy) = mercator.LatLonToMeters(bounds[3], bounds[2])
-			bounds3857 = array(minx, miny, maxx, maxy)
+#	for m in mymaps:
+
+
+
+
+
+
+
 #	%>
 
-	print	"""<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+	+	"""<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
 		<Layer>
-		  <ows:Title><% print title %></ows:Title>
-		  <ows:Identifier><% print basename %></ows:Identifier>
+		  <ows:Title>"""+ mytitle +"""</ows:Title>
+		  <ows:Identifier>"""+ basename +"""</ows:Identifier>
 		  <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
-			<ows:LowerCorner><% print bounds[0], ' ', bounds[1] %></ows:LowerCorner>
-			<ows:UpperCorner><% print bounds[2], ' ', bounds[3] %></ows:UpperCorner>
+			<ows:LowerCorner>"""+ bounds[0] + ' ' + bounds[1] +"""</ows:LowerCorner>
+			<ows:UpperCorner>"""+ bounds[2] + ' ' + bounds[3] +"""</ows:UpperCorner>
 		  </ows:WGS84BoundingBox>
 		  <Style isDefault="true">
 			<ows:Identifier>default</ows:Identifier>
 		  </Style>
-		  <Format><% print mime %></Format>
+		  <Format>"""+ mime +"""</Format>
 		  <TileMatrixSetLink>
-			<TileMatrixSet><% print tileMatrixSet %></TileMatrixSet>
+			<TileMatrixSet>"""+ tileMatrixSet +"""</TileMatrixSet>
 		  </TileMatrixSetLink>
 		  <ResourceURL format="<% print mime %>" resourceType="tile" template="<% print config_url[0] %><% print basename %>/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.<% print format %>"/>
 		</Layer>

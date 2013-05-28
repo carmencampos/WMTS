@@ -45,7 +45,7 @@ var tilejson = {
     formatter: function (options, data) { return "CODE: " + data.Name }
 };
 
-var layer = L.mapbox.gridLayer(tilejson);
+//var layer = L.mapbox.gridLayer(tilejson);
 
 //wax.tilejson(url, 
 //function(tilejson){
@@ -53,7 +53,7 @@ var layer = L.mapbox.gridLayer(tilejson);
 	map = new L.map('map')
 		//.addLayer(new wax.leaf.connector(tilejson))
 		.addLayer(mbTiles)
-		.addLayer(layer)
+		//.addLayer(layer)
 		.addLayer(oam)
 		.setView(new L.LatLng(50, 11), 7);
 		//center : new L.LatLng(47, 8),
