@@ -4,6 +4,7 @@ import glob
 import json
 import sqlite3
 import hashlib
+import math
 
 import python_wmts
 from python_wmts import *
@@ -20,14 +21,12 @@ maps = []
 # CORS header
 print 'Access-Control-Allow-Origin: *'
 
-
 # ------------
 # TEST SERVICE
 # ------------
 if(service == 'test'):
     bottle.response.content_type = "text/plain; charset=utf-8"
     print title + " at " + config_url
-
 	
 # ------------
 # HTML SERVICE
@@ -49,7 +48,6 @@ if(service == 'html'):
 <p>The mapping data are available as OpenGIS Web Map Tiling Service (OGC WMTS), OSGEO Tile Map Service (TMS), and popular XYZ urls described with TileJSON metadata.</p>
 """
 
-
 # Are there some maps on the server?
 if(len(maps) == 0):
 	"""
@@ -58,7 +56,6 @@ if(len(maps) == 0):
 	<p>Note: The maps can be a directory with tiles in XYZ format with metadata.json file.<br/>
 	You can easily convert existing geodata (GeoTIFF, ECW, MrSID, etc) to this tile structure with <a href="http://www.maptiler.com">MapTiler Cluster</a> or open-source projects such as <a href="http://www.klokan.cz/projects/gdal2tiles/">GDAL2Tiles</a> or <a href="http://www.maptiler.org/">MapTiler</a> or simply upload any maps in MBTiles format made by <a href="http://www.tilemill.com/">TileMill</a>. Helpful is also the <a href="https://github.com/mapbox/mbutil">mbutil</a> tool. Serving directly from .mbtiles files is supported, but with decreased performance.</p>
 	"""
-
 
 # Print the available maps
 else:
@@ -216,47 +213,48 @@ def metadataTileJson(metadata):
 
 
 class GlobalMercator:
-	global pi
-	pi = 3.14159
-
+	#global math.pi
+	#pi = 3.14159
+	
 	# Initialize the TMS Global Mercator pyramid
 	def __init__(self):
+		print "Create"
 		self.tileSize = 256
-		self.initialResolution = 2 * pi * 6378137 / self.tileSize
-		# 156543.03392804062 for tileSize 256 Pixels
-		self.originShift = 2 * pi * 6378137 / 2.0
+		self.initialResolution = 2 * math.pi * 6378137 / self.tileSize
+		# 156543.03392804062 for tileSize 256 math.pixels
+		self.originShift = 2 * math.pi * 6378137 / 2.0
 		# 20037508.342789244
 
 	# Converts given lat/lon in WGS84 Datum to XY in Spherical Mercator EPSG:900913
-	def LatLonToMeters(lat, lon):
+	def LatLonToMeters(self, lat, lon):
 		mx = lon * self.originShift / 180.0
-		my = log(tan((90 + lat) * pi / 360.0 )) / (pi / 180.0)
-		my *= selforiginShift / 180.0
+		my = math.log(math.tan((90 + lat) * math.pi / 360.0 )) / (math.pi / 180.0)
+		my *= self.originShift / 180.0
 		return (mx, my)
 
 	# Converts XY point from Spherical Mercator EPSG:900913 to lat/lon in WGS84 Datum
 	def MetersToLatLon(mx, my):
 		lon = (mx / self.originShift) * 180.0
 		lat = (my / self.originShift) * 180.0
-		lat = 180 / pi * (2 * atan(exp(lat * pi / 180.0)) - pi / 2.0)
+		lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180.0)) - math.pi / 2.0)
 		return (lat, lon)
 
-	# Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
-	def PixelsToMeters(px, py, zoom):
+	# Converts math.pixel coordinates in given zoom level of pyramid to EPSG:900913
+	def pixelsToMeters(px, py, zoom):
 		res = Resolution(zoom)
 		mx = px * res - self.originShift
 		my = py * res - self.originShift
 		return (mx, my)
 
-	# Converts EPSG:900913 to pyramid pixel coordinates in given zoom level
+	# Converts EPSG:900913 to pyramid math.pixel coordinates in given zoom level
 	def MetersToPixels(mx, my, zoom):
 		res = Resolution(zoom)
 		px = (mx + self.originShift) / res
 		py = (my + self.originShift) / res
 		return array(px, py)
 
-	# Returns a tile covering region in given pixel coordinates
-	def PixelsToTile(px, py):
+	# Returns a tile covering region in given math.pixel coordinates
+	def pixelsToTile(px, py):
 		tx = ceil(px / self.tileSize ) - 1
 		ty = ceil(py / self.tileSize ) - 1
 		return array(tx, ty)
@@ -264,21 +262,21 @@ class GlobalMercator:
 	# Returns tile for given mercator coordinates
 	def MetersToTile(mx, my, zoom):
 		(px, py) = MetersToPixels(mx, my, zoom)
-		return PixelsToTile(px, py)
+		return math.pixelsToTile(px, py)
 
 	# Returns bounds of the given tile in EPSG:900913 coordinates
 	def TileBounds(tx, ty, zoom):
 		minx = (tx*self.tileSize, ty*self.tileSize, zoom)[0]
 		miny = (tx*self.tileSize, ty*self.tileSize, zoom)[1]
-		maxx = PixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[0]
-		maxy = PixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[1]
+		maxx = math.pixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[0]
+		maxy = math.pixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[1]
 		return array(minx, miny, maxx, maxy)
 
 	# Returns bounds of the given tile in latutude/longitude using WGS84 datum
 	def TileLatLonBounds(tx, ty, zoom):
 		bounds = TileBounds(tx, ty, zoom)
-		(minLat, minLon) = MetersToLatLon(bounds[0], bounds[1])
-		(maxLat, maxLon) = MetersToLatLon(bounds[2], bounds[3])
+		(minLat, minLon) = MetersToLatLon(float(bounds[0]), float(bounds[1]))
+		(maxLat, maxLon) = MetersToLatLon(float(bounds[2]), float(bounds[3]))
 		return array(minLat, minLon, maxLat, maxLon)
 
 	# Resolution (meters/pixel) for given zoom level (measured at Equator)
