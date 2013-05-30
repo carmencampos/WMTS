@@ -7,16 +7,18 @@ import hashlib
 import math
 
 import python_wmts
-from python_wmts import *
-
-config_url = ["http://localhost:8000/"]
-title = "Tiny Tile Server"
- 
-mylayer = "example" #python_wmts.layer
-service = "WMTS" #python_wmts.service
-# callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
+#from python_wmts import *
 
 maps = []
+config_url = ["http://localhost:8000/"]
+title = "Tiny Tile Server"
+service = "WMTS"
+
+def init_data(layer, x, y, z):
+	global mylayer
+	mylayer = layer
+	# callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
+	return python_wmts.get_tile_wmts(mylayer, x, y, z)
 
 # CORS header
 print 'Access-Control-Allow-Origin: *'
@@ -78,7 +80,7 @@ if(service == 'json'):
     bottle.response.content_type = "application/json; charset=utf-8"
   
     if(mylayer):
-        output = metadataTileJson(mylayer(mylayer))
+        output = metadataTileJson(layer(mylayer))
     else:
         maps = maps()
         tilejsons = []

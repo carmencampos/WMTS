@@ -64,6 +64,7 @@ def get_grid(layer, x, y, z): #, ext):
 	# Serialize jsonfiles to a JSON formatted string using -> http://docs.python.org/2/library/json.html#py-to-json-table
 	res = json.dumps(jsonfiles)
 	# return res
+	# Wrapped in a function to make it compatible with Wax
 	sol = "grid(%s)" % res #reqwest_1369811590395(%s)
 	return sol
 

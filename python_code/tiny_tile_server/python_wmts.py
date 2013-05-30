@@ -7,24 +7,18 @@ from python_server import *
 
 python_wmts = bottle.Bottle()
 
-global service
-global layer
-layer = "empty"
+#global service
+#global layer
+#layer = "empty"
 	
 def get_tile_wmts(mylayer, x, y, z):
-
-# <% print config_url[0] %> -> config_url[0]
-
 	mercator = GlobalMercator()
-
 	layer = mylayer
-	mytitle = "Tiny Tile Server"
+	mytitle = title #"Tiny Tile Server"
 	config = config_url[0]
-
 	TileMatrix = z
 	TileCol = x
 	TileRow = y
-
 	global mymaps
 	#mymaps = python_server.maps()
 	mymaps = maps()
@@ -32,7 +26,7 @@ def get_tile_wmts(mylayer, x, y, z):
 	# for m in mymaps: en 113
 	m = mymaps[0]	
 	basename = m['basename']
-	title = m['name'] if ('name' in m) else basename
+	#mytitle = m['name'] if ('name' in m) else basename
 	profile = m['profile']
 	bounds = m['bounds']
 	print bounds
@@ -75,7 +69,7 @@ def get_tile_wmts(mylayer, x, y, z):
 				</ows:Constraint>
 			  </ows:Get>
 			  <!-- Add KVP binding in 10.1 -->
-			  <ows:Get xlink:href="configwmts?"> 
+			  <ows:Get xlink:href='"""+ config +"""wmts?'> 
 				<ows:Constraint name="GetEncoding">
 				  <ows:AllowedValues>
 					<ows:Value>KVP</ows:Value>
@@ -88,14 +82,14 @@ def get_tile_wmts(mylayer, x, y, z):
 		<ows:Operation name="GetTile">
 		  <ows:DCP>
 			<ows:HTTP>
-			  <ows:Get xlink:href="config_url[0]wmts/">
+			  <ows:Get xlink:href='"""+ config +"""api/tile/"""+ basename +"""'>
 				<ows:Constraint name="GetEncoding">
 				  <ows:AllowedValues>
 					<ows:Value>RESTful</ows:Value>
 				  </ows:AllowedValues>
 				</ows:Constraint>
 			  </ows:Get>
-			  <ows:Get xlink:href="config_url[0]wmts?">
+			  <ows:Get xlink:href='"""+ config +"""api/tile/"""+ basename +"""'>
 				<ows:Constraint name="GetEncoding">
 				  <ows:AllowedValues>
 					<ows:Value>KVP</ows:Value>
@@ -122,14 +116,14 @@ def get_tile_wmts(mylayer, x, y, z):
 		  <TileMatrixSetLink>
 			<TileMatrixSet>"""+ tileMatrixSet +"""</TileMatrixSet>
 		  </TileMatrixSetLink>
-		  <ResourceURL format="mime" resourceType="tile" template="config_url[0] basename /{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.format"/>
+		  <ResourceURL format="mime" resourceType="tile" template='"""+ config +"""api/tile/"""+ basename +"""/"""+ TileMatrix +"""/"""+ TileCol +"""/"""+ TileRow +"""."""+ format +"""'/>
 		</Layer>
 		
 		<!--TileMatrixSet-->
 
 		<TileMatrixSet>
 		  <ows:Title>GoogleMapsCompatible</ows:Title>
-		  <ows:Abstract>the wellknown 'GoogleMapsCompatible' tile matrix set defined by OGC WMTS specification</ows:Abstract>
+		  <ows:Abstract>'GoogleMapsCompatible' tile matrix set defined by OGC WMTS specification</ows:Abstract>
 		  <ows:Identifier>GoogleMapsCompatible</ows:Identifier>
 		  <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18:3:3857</ows:SupportedCRS>
 		  <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
@@ -480,5 +474,5 @@ def get_tile_wmts(mylayer, x, y, z):
 		</TileMatrixSet>
 
 	  </Contents>
-	  <ServiceMetadataURL xlink:href="config_url[0]>wmts/1.0.0/WMTSCapabilities.xml"/>
+	  <ServiceMetadataURL xlink:href='"""+ config +"""wmts/1.0.0/WMTSCapabilities.xml'/>
 	</Capabilities>"""
