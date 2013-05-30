@@ -4,6 +4,7 @@ api = bottle.Bottle();
 
 from tiny_tile_server import base
 from tiny_tile_server import python_wmts
+from tiny_tile_server import python_server
 
 #api.route (incl. get, delete, post, put)
 #api.get
@@ -30,18 +31,15 @@ def api_metadata(layer):
 	bottle.response.content_type = "application/json"
 	return base.get_metadata(layer)
 
-#http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}');
-#@api.get('/wmtstile/Service=WMTS/<layer>/<z>/<x>/<y>')
-@api.get('/wmtstile/Service=WMTS/Version=1.0.0/Request=GetTile/Layer=<layer>/style=default/format=image/jpeg/TileMatrixSet=googlemapscompatible/TileMatrix=<z>/TileRow=<y>/TileCol=<x>')
-def api_wmts(layer, x, y, z):
-	print "accede a api_wmts"
-	bottle.response.content_type = "application/xml"
-	return python_wmts.get_tile_wmts(layer, x, y, z)
-
-#@api.get('/wmtstile/Service=WMTS')
-#def api_wmts():
-	#print "hola que tal"
+#http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}')
+@api.get('/wmtstile/Service=WMTS/Version=1.0.0/Request=GetTile/Layer=<layer>/style=default/format=image/jpeg/TileMatrixSet=googlemapscompatible/TileMatrix=<z>/TileRow=<x>/TileCol=<y>')
+#@api.get('/wmtstile?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=<layer>&STYLE=default&TILEMATRIXSET=googlemapscompatible&TILEMATRIX=<z>&TILEROW=<x>&TILECOL=<y>') #&FORMAT=image/png')
+#@api.get('/wmtstile/<url:re:.+>')
+#@api.get('/wmts<url:re.+>')
+def api_wmts(layer, z, x, y):
+	print "accede a api_wmts url: " #+ url
 	#bottle.response.content_type = "application/xml"
+	return python_server.init_data(layer, x, y, z)
 	#return python_wmts.get_tile_wmts(layer, x, y, z)
 
 @api.get('/tile?service=tms&request=getTile&layer=<layer>...')

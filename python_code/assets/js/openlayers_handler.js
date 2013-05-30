@@ -48,19 +48,21 @@ var map;
     }
 
     var wmts = new OpenLayers.Layer.WMTS({
-        name: "Medford Buildings",
+        name: "Example Map", //"Medford Buildings",
         //url: "http://v2.suite.opengeo.org/geoserver/gwc/service/wmts/",
-		url: "http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}",
-        layer: "medford:buildings",
-        matrixSet: "EPSG:900913",
-        matrixIds: matrixIds,
+		//url: "http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}",
+        //url: "http://localhost:8000/api/wmtstile/Service=WMTS/Version=1.0.0/Request=GetTile/Layer=example/style=default/format=image/jpeg/TileMatrixSet=googlemapscompatible/TileMatrix=1/TileRow=1/TileCol=1",
+		url: "http://localhost:8000/api/wmtstile/",
+		layer: "example",
+        matrixSet: "googlemapscompatible", //"EPSG:900913",
+        //matrixIds: matrixIds,
         format: "image/png",
-        style: "_null",
+        style: "default", //"_null",
         opacity: 0.7,
         isBaseLayer: false
     });                
 
-    map.addLayers([wmts]);
+    map.addLayers([osm, wmts]);
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.setCenter(new OpenLayers.LonLat(-13677832, 5213272), 13);
 

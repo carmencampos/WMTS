@@ -33,6 +33,15 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 
+/*grid = function (e){
+	//alert('Bar');
+	if (e.grid) {
+		document.getElementById('more').innerHTML = 'and: ' + e.data.Name;
+	}
+	else
+		document.getElementById('more').innerHTML = 'and: ' + "nothing else...";
+}*/
+
 var tilejson = {
     tilejson: '1.0.0',
     //tms: true, 
