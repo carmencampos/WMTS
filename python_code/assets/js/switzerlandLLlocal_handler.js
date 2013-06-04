@@ -32,28 +32,30 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	// using "true" the switched layer box appears collapsed
 	collapsed: true
 });
+var tilejson = {
+    tilejson: '1.0.0',
+    //tms: true, 
+	scheme: 'tms',
+	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
+    template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
+    tiles: ['http://localhost:8000/api/tile/points_of_interest/{z}/{x}/{y}.png'],  
+    grids: ['http://localhost:8000/api/grid/points_of_interest/{z}/{x}/{y}.grid.json'],  
+	//grids: ['http://c.tiles.mapbox.com/v3/cbordons.switzerland3/{z}/{x}/{y}.grid.json'],
+    formatter: function (options, data) { return "CODE: " + data.Name }
+};
 
-/*map = new L.map('map',{ 
-	// the center of the map at the beginning
-	center : new L.LatLng(47, 8),
-	// and the zoom level
-	zoom : 3,
-	// these are the layers that appear in the map
-	layers: [oam, mbTiles]
-});*/
 
+//var url = 'http://localhost:8000/api/tile/points_of_interest/{z}/{x}/{y}.json';
 
-var url = 'http://localhost:8000/api/tile/points_of_interest/{z}/{x}/{y}.json';
-
-wax.tilejson(url,
-    function(tilejson) {
+//wax.tilejson(url,
+    //function(tilejson) {
         var map = new L.Map('map')
 			.addLayer(oam)
 			.addLayer(mbTiles)
             .addLayer(new wax.leaf.connector(tilejson))
             .setView(new L.LatLng(47, 8), 7);
         var interaction = wax.leaf.interaction(map, tilejson);
-    });
+//    });
 	
 	// Add a scale to the map
 	L.control.scale().addTo(map);

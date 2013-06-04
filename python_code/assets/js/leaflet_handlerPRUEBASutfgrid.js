@@ -1,7 +1,9 @@
 
-var grid;
-
 $(document).ready(function() {
+
+
+/*
+var grid;
 
 		var cloudmade = L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
 			maxZoom: 18,
@@ -51,5 +53,6 @@ grid = function (e){
 				.setView([50, 11], 7)
 				.addLayer(cloudmade)
 				.addLayer(utfGrid);
+*/
 
 });

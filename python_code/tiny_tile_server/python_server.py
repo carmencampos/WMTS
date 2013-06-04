@@ -9,16 +9,16 @@ import math
 import python_wmts
 #from python_wmts import *
 
-maps = []
 config_url = ["http://localhost:8000/"]
 title = "Tiny Tile Server"
 service = "WMTS"
+maps = []
 
 def init_data(layer, x, y, z):
 	global mylayer
 	mylayer = layer
 	# callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
-	return python_wmts.get_tile_wmts(mylayer, x, y, z)
+	return "<!DOCTYPE html><html><head></head><body><h1>"+ python_wmts.get_tile_wmts(mylayer, x, y, z) +"</h1></body></html>"
 
 # CORS header
 print 'Access-Control-Allow-Origin: *'
@@ -112,20 +112,26 @@ def maps():
     maps.append(metadataFromMbtiles())
     return maps
 
+# check is the metadata information will be extracted from the metadata.json file 
+# or from the metadata table in the MBTiles database
 def layer(mylayer):
     if((mylayer.find('.mbtiles')) == -1):
         return metadataFromMetadataJson(mylayer.append('/metadata.json'))
     else:
         return metadataFromMbtiles(mylayer)
 
+# open and read the metadata from the file that receive as parameter, check that it is right 
+# and add in metadata the basename with the value of that file
 def metadataFromMetadataJson(jsonFileName):
 	metadata = json.load(open(jsonFileName).read())
 	metadata = metadataValidation(metadata)
 	metadata['basename'] = jsonFileName.replace('/metadata.json', '')
 	return metadata
 
+# connect to the MBTiles database and extract all the metadata information from the metadata table, 
+# check that it is right and add in metadata the basename with the value of the layer name
 def metadataFromMbtiles():
-	print "layer %s" % mylayer
+	# print "layer %s" % mylayer
 	metadata = {}
 	try:
 		# Connect to the database and get the cursor
@@ -141,20 +147,21 @@ def metadataFromMbtiles():
 	for r in result:
 		a = r[0] #r['name']
 		b = r[1] #r['value']
-		#print "eeeeeeooooooo %s yyy %s" % (a, b)
-		##sol = dict(a, b)
-		metadata[a] = b
+		metadata[a] = b ##sol = dict(a, b)
 	metadata = metadataValidation(metadata)
 	metadata['basename'] = mylayer
 	return metadata
 
+# check and correct the metadata; split the values from the bounds so we get an array with the four values, 
+# assign 'mercator' as the value by default for profile in case this is missing, if there is not minzoom 
+# it should be 0, if there is it specifies that should be an integer, if there is not maxzoom it should be 18, 
+# if there is it specifies that should be an integer, assign 'png' as the value by default for format 
+# in case this is missing
 def metadataValidation(metadata):
 	if('bounds' in metadata):
-  	#TODO:Calculate bounds from tiles if bounds is missing - with GlobalMercator
-		metadata['bounds'] = metadata['bounds'].split(',')
+  		metadata['bounds'] = metadata['bounds'].split(',')
 	if not('profile' in metadata):
 		metadata['profile'] = 'mercator'
-	#TODO: detect format, minzoom, maxzoom, thumb
 	if('minzoom' in metadata):
 		metadata['minzoom'] = int(metadata['minzoom'])
 	else:
@@ -167,6 +174,8 @@ def metadataValidation(metadata):
 		metadata['format'] = 'png'
 	return metadata
 
+# add some more values to the metadata information: the 'tilejson', 
+# the kind of the 'scheme' and the url for the 'tiles'
 def metadataTileJson(metadata):
   metadata['tilejson'] = '2.0.0'
   metadata['sheme'] = 'xyz'
@@ -214,6 +223,7 @@ def metadataTileJson(metadata):
     #print 'HTTP/1.0 304 Not Modified'
 
 
+# http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/
 class GlobalMercator:
 	#global math.pi
 	#pi = 3.14159
@@ -257,8 +267,8 @@ class GlobalMercator:
 
 	# Returns a tile covering region in given math.pixel coordinates
 	def pixelsToTile(px, py):
-		tx = ceil(px / self.tileSize ) - 1
-		ty = ceil(py / self.tileSize ) - 1
+		tx = math.ceil(px / self.tileSize ) - 1
+		ty = math.ceil(py / self.tileSize ) - 1
 		return array(tx, ty)
 
 	# Returns tile for given mercator coordinates
@@ -270,8 +280,8 @@ class GlobalMercator:
 	def TileBounds(tx, ty, zoom):
 		minx = (tx*self.tileSize, ty*self.tileSize, zoom)[0]
 		miny = (tx*self.tileSize, ty*self.tileSize, zoom)[1]
-		maxx = math.pixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[0]
-		maxy = math.pixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[1]
+		maxx = pixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[0]
+		maxy = pixelsToMeters((tx+1)*self.tileSize, (ty+1)*self.tileSize, zoom)[1]
 		return array(minx, miny, maxx, maxy)
 
 	# Returns bounds of the given tile in latutude/longitude using WGS84 datum

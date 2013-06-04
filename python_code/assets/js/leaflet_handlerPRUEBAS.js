@@ -1,6 +1,10 @@
 
 $(document).ready(function() {
 
+	document.getElementById('map').innerHTML =
+
+
+/*
 	var map;
 	
 	//'http://{s}.geospatial.intergraph.com/erdas-iws/ogc/wmts?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=virtualmosaic&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatibleext2:epsg:3857&TileMatrix={z}&TileRow={y}&TileCol={x}', 
@@ -25,6 +29,7 @@ $(document).ready(function() {
         isBaseLayer: false
     });*/
 
+	/*
 	var wmts2 = L.tileLayer('<ServiceRoot>?SERVICE=WMTS&REQUEST=GetTile&VERSION=[version]&Layer=[layername]&Format=image/png&TileMatrixSet[MatrixsetName]=&TileMatrix={z}&TileRow={x}&TileCol={y}');
 
 	var map = L.map('map', {

@@ -26,12 +26,12 @@ def get_tile_wmts(mylayer, x, y, z):
 	# for m in mymaps: en 113
 	m = mymaps[0]	
 	basename = m['basename']
-	#mytitle = m['name'] if ('name' in m) else basename
+	#title = m['name'] if ('name' in m) else basename
 	profile = m['profile']
 	bounds = m['bounds']
-	print bounds
-	print bounds[0]
-	print bounds[1]
+	#print bounds
+	#print bounds[0]
+	#print bounds[1]
 	format = m['format']
 	mime = 'image/jpeg' if (format == 'jpg') else 'image/png'
 	if (profile == 'geodetic'):
@@ -46,9 +46,9 @@ def get_tile_wmts(mylayer, x, y, z):
 		(maxx, maxy) = mercator.LatLonToMeters(float(c), float(d))
 		bounds3857 = [minx, miny, maxx, maxy]
 
-	bottle.response.content_type = "application/xml"
-	
-	return """<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n
+	bottle.response.content_type = "application/xml" #"text/xml"
+	# <?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n
+	return """
 	 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 	  <!-- Service Identification -->
 	  <ows:ServiceIdentification>
@@ -103,7 +103,7 @@ def get_tile_wmts(mylayer, x, y, z):
 	  <Contents>
 	  
 		<Layer>
-		  <ows:Title>"""+ mytitle +"""</ows:Title>
+		  <ows:Title>"""+ basename +"""</ows:Title>
 		  <ows:Identifier>"""+ basename +"""</ows:Identifier>
 		  <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
 			<ows:LowerCorner>"""+ bounds[0] + ' ' + bounds[1] +"""</ows:LowerCorner>
