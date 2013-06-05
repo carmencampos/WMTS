@@ -14,26 +14,21 @@ def web_main():
     return dict()
     #return dict(title="Tiny Tile Server")#, menu="main")
 
-@app.route('/leaflet')
-@bottle.view('leaflet')
-def web_leaflet():
-	return dict()#title="Leaflet Example")#, menu="leaflet")
+@app.route('/tutorials')
+@bottle.view('tutorials')
+def web_tutorials():
+	return dict()
 
-@app.route('/leafletPRUEBAS')
-@bottle.view('leafletPRUEBAS')
-def web_leaflet():
+@app.route('/planning')
+@bottle.view('planning')
+def web_planning():
+	return dict()
+
+@app.route('/protocol')
+@bottle.view('protocol')
+def web_protocol():
 	return dict()
 	
-@app.route('/leafletPRUEBASutfgrid')
-@bottle.view('leafletPRUEBASutfgrid')
-def web_leaflet():
-	return dict()
-	
-@app.route('/openlayers')
-@bottle.view('openlayers')
-def web_openlayers():
-	return dict()#title="Openlayers Example")#, menu="openlayers")
-
 @app.route('/exampleLL')
 @bottle.view('exampleLL')
 def web_leaflet1():
@@ -44,7 +39,7 @@ def web_leaflet1():
 def web_leaflet2():
 	return dict()
 
-@app.route('/switzerlandLL')
+@app.route('/geography-classLL')
 @bottle.view('switzerlandLL')
 def web_leaflet_switzerland1():
 	return dict()
@@ -69,6 +64,18 @@ def web_openlayers2():
 def web_openlayers_switzerland1():
 	return dict()
 
+# WMTS
+@app.route('/exampleLLwmts')
+@bottle.view('exampleLLwmts')
+def web_leaflet_wmts():
+	return dict()
+
+@app.route('/geography-classOLwmts')
+@bottle.view('switzerlandOLwmts')
+def web_openlayers_wmts():
+	return dict()
+	
+# TUTORIALS
 @app.route('/switzerlandOLlocal')
 @bottle.view('switzerlandOLlocaL')
 def web_openlayers_switzerland2():
@@ -88,3 +95,24 @@ def web_tileMillSwitzerland():
 @bottle.view('tileMillSwitzerlandAntes')
 def web_tileMillSwitzerlandAntes():
 	return dict()
+	
+# TESTING
+@app.route('/leaflet')
+@bottle.view('leaflet')
+def web_leaflet():
+	return dict()#title="Leaflet Example")#, menu="leaflet")
+
+@app.route('/leafletPRUEBAS')
+@bottle.view('leafletPRUEBAS')
+def web_leaflet():
+	return dict()
+	
+@app.route('/leafletPRUEBASutfgrid')
+@bottle.view('leafletPRUEBASutfgrid')
+def web_leaflet():
+	return dict()
+	
+@app.route('/openlayers')
+@bottle.view('openlayers')
+def web_openlayers():
+	return dict()#title="Openlayers Example")#, menu="openlayers")

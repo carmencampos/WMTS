@@ -7,18 +7,19 @@ import hashlib
 import math
 
 import python_wmts
+import python_tms
 #from python_wmts import *
 
 config_url = ["http://localhost:8000/"]
 title = "Tiny Tile Server"
-service = "WMTS"
+service = ""
 maps = []
 
 def init_data(layer, x, y, z):
 	global mylayer
 	mylayer = layer
 	# callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
-	return "<!DOCTYPE html><html><head></head><body><h1>"+ python_wmts.get_tile_wmts(mylayer, x, y, z) +"</h1></body></html>"
+	return python_wmts.get_tile_wmts(mylayer, x, y, z)
 
 # CORS header
 print 'Access-Control-Allow-Origin: *'

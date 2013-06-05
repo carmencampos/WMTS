@@ -1,26 +1,24 @@
 
 import bottle
-import python_server.py
+
+# we need the functions
+import python_server
+from python_server import *
+
+python_wmts = bottle.Bottle()
 
 def get_tile_tms(layer):
-
-	python_tms = bottle.Bottle()
-
-	maps = maps()
-
+	config = config_url[0]
+	mymaps = maps()
 	bottle.response.content_type = "application/xml"
 
-	print "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"; 
-
-	if (layer == ""):
-	  maps = maps()
+	# print "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"; 
 
 	# -----------
 	# TMS SERVICE
 	# -----------
-	<TileMapService version="1.0.0">
-	  <TileMaps>
-	<%
+	if (layer == ""):
+	  mymaps = maps()
 	  for m in maps:
 		basename = m['basename']
 		title = m['name'] if ('name' in m) else basename
@@ -29,11 +27,7 @@ def get_tile_tms(layer):
 			srs = "EPSG:4326"
 		else:
 			srs = "EPSG:3857"
-		print "    <TileMap title=\"title\" srs=\"srs\" type=\"InvertedTMS\" profile=\"global-profile\" href=\"config_url[0]basename/tms\" />\n"
-	%>
-	  </TileMaps>
-	</TileMapService>
-
+			
 	# ---------
 	# TMS LAYER
 	# ---------
@@ -61,17 +55,24 @@ def get_tile_tms(layer):
 			initialResolution = 156543.03392804062
 		format = m['format']
 		mime = 'image/jpeg' if (format == 'jpg') else 'image/png'
-	%>
+		
 
-	<TileMap version="1.0.0" tilemapservice="<% print config_url.basename %>" type="InvertedTMS">
-		<Title><% print htmlspecialchars(title) %></Title>
-		<Abstract><% print htmlspecialchars(description) %></Abstract>
-		<SRS><% print srs %></SRS>
-		<BoundingBox minx="<% print bounds[0] %>" miny="<% print bounds[1] ?>" maxx="<% print bounds[2] ?>" maxy="<% print bounds[3] %>" />
-		<Origin x="<% print originx %>" y="<% print originy %>"/>
-		<TileFormat width="256" height="256" mime-type="<% print mime %>" extension="<% print format %>"/>
-		<TileSets profile="global-<% print profile %>">
-	<% for (zoom = m['minzoom']; zoom < m['maxzoom']+1; zoom++ ):%>
-			<TileSet href="<% print config_url.basename.'/'.zoom ?>" units-per-pixel="<% print initialResolution / (2 ** zoom) %>" order="<% print zoom %>" />
-		</TileSets>
-	</TileMap>
+	#<TileMapService version="1.0.0">
+	#  <TileMaps>
+	# print "    <TileMap title=\"title\" srs=\"srs\" type=\"InvertedTMS\" profile=\"global-profile\" href=\"config_url[0]basename/tms\" />\n"
+	# </TileMaps>
+	#</TileMapService>
+
+	return """
+	<TileMap version="1.0.0" tilemapservice="""+ config_url.basename +""" type="InvertedTMS">
+		<Title>"""+ htmlspecialchars(title) +"""</Title>
+		<Abstract>"""+ htmlspecialchars(description) +"""</Abstract>
+		<SRS>"""+ srs +"""</SRS>
+		<BoundingBox minx='"""+ bounds[0] +"""' miny='"""+ bounds[1] +"""' maxx='"""+ bounds[2] +"""' maxy='"""+ bounds[3] +"""' />
+		<Origin x='"""+ originx +"""' y='"""+ originy +"""'/>
+		<TileFormat width="256" height="256" mime-type='"""+ mime +"""' extension='"""+ format +"""'/>
+		<TileSets profile="global-"""+ profile +"""'>"""
+#	<% for (zoom = m['minzoom']; zoom < m['maxzoom']+1; zoom++ ):%>
+#			"""<TileSet href='"""+ config_url.basename.'/'.zoom +"""' units-per-pixel='"""+ initialResolution / (2 ** zoom) +"""' order='"""+ zoom +"""' />
+#		</TileSets>
+#	</TileMap>"""

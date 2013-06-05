@@ -12,17 +12,17 @@ def get_tile(layer, x, y, z, ext):
 		caux2 = db.cursor()
 		#closing(db.cursor)
 	except:
-#		return None
+		# return None
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
 		return ["Not found: %s.mbtiles" % (layer,)]
 	# Get the tiles from the database, using the zoom and the coordinates we got previously
 	caux1.execute("select max(tile_row) from tiles where zoom_level=? and tile_column=?", (z, x))
 	resaux1 = caux1.fetchone()
-	#print "YYYYYYYYYYYYYmax %s" % resaux1[0]
+	# print "YYYYYYYYYYYYYmax %s" % resaux1[0]
 	caux2.execute("select min(tile_row) from tiles where zoom_level=? and tile_column=?", (z, x))
 	resaux2 = caux2.fetchone()
-	#print "YYYYYYYYYYYYYmin %s" % resaux2[0]
+	# print "YYYYYYYYYYYYYmin %s" % resaux2[0]
 	y_new = int(resaux1[0]) - int(y) + int(resaux2[0])
 	c.execute("select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z))
 	res = c.fetchone()

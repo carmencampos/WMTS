@@ -39,7 +39,7 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 
-var url = 'http://d.tiles.mapbox.com/v3/carmencampos.example.jsonp';
+var url = 'http://api.tiles.mapbox.com/v3/carmencampos.example.jsonp';
 //var url = 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp';
 
 wax.tilejson(url,
