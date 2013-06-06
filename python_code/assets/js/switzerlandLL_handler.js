@@ -11,9 +11,9 @@ var oam = new L.TileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 });
 
 // this part is to show the layer using the map hosted in mapbox
-// http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png is the url where our map is hosted in mapbox
+// http://{s}.tiles.mapbox.com/v3/cbordons.swtizerland3/{z}/{x}/{y}.png is the url where our map is hosted in mapbox
 // in general would be http://{s}.tiles.mapbox.com/v3/{user}.{name-of-the-map}/{z}/{x}/{y}.png
-var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png', {
+var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/cbordons.swtizerland3/{z}/{x}/{y}.png', {
 	//If true, inverses Y axis numbering for tiles (turn this on for TMS services)
 	tms: false,
 	minZoom: 2,
@@ -39,7 +39,7 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 	
-var url = 'http://a.tiles.mapbox.com/v3/mapbox.geography-class.jsonp';
+var url = 'http://a.tiles.mapbox.com/v3/cbordons.swtizerland3.jsonp';
 
 // We need Wax to add the legend and the tooltips to the map
 wax.tilejson(url, 

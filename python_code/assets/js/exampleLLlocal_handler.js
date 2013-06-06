@@ -34,7 +34,7 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 });
 
 /*grid = function (e){
-	//alert('Bar');
+	alert('Bar');
 	if (e.grid) {
 		document.getElementById('more').innerHTML = 'and: ' + e.data.Name;
 	}
@@ -48,7 +48,7 @@ var tilejson = {
 	scheme: 'tms',
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
     template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
-    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],  //example
+    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],  //example //geography-class
     grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],  //example
 	//grids: ['http://c.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json'],
     formatter: function (options, data) { return "CODE: " + data.Name }
@@ -64,9 +64,11 @@ var tilejson = {
 		.addLayer(mbTiles)
 		//.addLayer(layer)
 		.addLayer(oam)
-		.setView(new L.LatLng(50, 11), 7);
-		//center : new L.LatLng(47, 8),
-		//zoom : 3
+		// Switzerland
+		//.setView(new L.LatLng(50, 11), 6);
+		//.setView(new L.LatLng(35, 9), 7);
+		.setView(new L.LatLng(0, 0), 4);
+		//.setView(new L.LatLng(50, 11), 0);
 		// these are the layers that appear by default
 		//layers: [oam, mbTiles]
 	//});

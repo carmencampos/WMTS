@@ -13,7 +13,7 @@ var map;
 		var wmts = new OpenLayers.Layer.WMTS({
 	        name: "geography-class",
 				requestEncoding: 'REST',
-				url: "http://localhost:8000/api/tilewmts/example/{TileMatrix}/{TileCol}/{TileRow}.png",
+				url: "http://localhost:8000/api/tilewmts/points_of_interest/{TileMatrix}/{TileCol}/{TileRow}.png",
 				//url: "http://api.tiles.mapbox.com/v3/mapbox.geography-class/{TileMatrix}/{TileCol}/{TileRow}.png",
 	        layer: "geography-class",
 	        matrixSet: "GoogleMapsCompatible",

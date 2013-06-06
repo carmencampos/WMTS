@@ -13,7 +13,7 @@ var map;
 		var wmts = new OpenLayers.Layer.WMTS({
 	        name: "geography-class",
 				requestEncoding: 'REST',
-				url: "http://localhost:8000/api/tilewmts/geography-class/{TileMatrix}/{TileCol}/{TileRow}.png",
+				url: "http://localhost:8000/api/tilewmts/points_of_interest/{TileMatrix}/{TileCol}/{TileRow}.png",
 			layer: "geography-class",
 	        matrixSet: "GoogleMapsCompatible",
 	        format: "image/png",
@@ -24,7 +24,7 @@ var map;
       												
 		map = new OpenLayers.Map({
 		    div: "map",
-		    layers: [baseOSM, wmts],
+			layers: [baseOSM, wmts],
 			projection: "EPSG:3857",
 		    controls: [
 				new OpenLayers.Control.LayerSwitcher(),
@@ -35,10 +35,16 @@ var map;
 		            }
 		        }),
 		        new OpenLayers.Control.PanZoomBar(),
-		        new OpenLayers.Control.ScaleLine()
-		    ]
+		        new OpenLayers.Control.ScaleLine(),
+				new OpenLayers.Control.Permalink({anchor: true})
+		    ],
+			//center: [10, 1],
+			//zoom: 7
 		});
+		
+		map.setCenter(new OpenLayers.LonLat(9.63,46.88).transform(new OpenLayers.Projection("EPSG:4326"),map.getProjectionObject()), 6);     
 
-        map.zoomTo(3);
+		//map.setCenter(new OpenLayers.LonLat(10, 10), 5);
+        //map.zoomTo(5);
 
 });
