@@ -6,14 +6,14 @@ var map;
 // we take data from OpenStreetMap to use a base layer
 var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
 	maxZoom: 17,
-	minZoom: 2,
+	minZoom: 0,
 	subdomains: ["otile1", "otile2", "otile3", "otile4"],
 });
 
 // this part is to show the layer using the local map
 var mbTiles = new L.tileLayer("http://localhost:8000/api/tile/{s}/{z}/{x}/{y}.png", {
 	tms: true,
-	minZoom: 2,
+	minZoom: 0,
 	subdomains : ["example"], //example
 	opacity: 0.7
 });
@@ -65,9 +65,9 @@ var tilejson = {
 		//.addLayer(layer)
 		.addLayer(oam)
 		// Switzerland
-		//.setView(new L.LatLng(50, 11), 6);
+		.setView(new L.LatLng(50, 11), 6);
 		//.setView(new L.LatLng(35, 9), 7);
-		.setView(new L.LatLng(0, 0), 4);
+		//.setView(new L.LatLng(0, 0), 4);  //4
 		//.setView(new L.LatLng(50, 11), 0);
 		// these are the layers that appear by default
 		//layers: [oam, mbTiles]

@@ -10,7 +10,7 @@ def get_tile(layer, x, y, z, ext):
 		c = db.cursor()
 		caux1 = db.cursor()
 		caux2 = db.cursor()
-		#closing(db.cursor)
+		#closing(db.cursor())
 	except:
 		# return None
 		# In case the connection can not be done
@@ -20,20 +20,21 @@ def get_tile(layer, x, y, z, ext):
 	c.execute("select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?", (x, y, z))
 	res = c.fetchone()
 	if res:
+		# get_grid(layer, x, y, z)
 		# In case there are tiles, print them with their necesary headers
 		return bytes(res[0])
 	return None
 
 
 def get_grid(layer, x, y, z): #, ext):
-	y_new = int(y)# + 43
+	y_new = (2**int(z) - 1) - int(y) #int(y)# + 43
 	print "accede a grid"
     # Connect to the database and get the cursor
 	try:
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c1 = db.cursor()
 		c2 = db.cursor()
-		#closing(db.cursor)
+		#closing(db.cursor())
 	except:
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
@@ -46,7 +47,7 @@ def get_grid(layer, x, y, z): #, ext):
 		print "NO ROW"
 		return None
 	bts = bytes(row[0])
-	print "get_grid: ROW x y w %s %s %s %s" % (x, y, z, len(bts),)
+	print "get_grid: ROW x y w %s %s %s %s" % (x, y_new, z, len(bts),)
 	# Decompresses the data in string, returning a string containing the uncompressed data.
 	files = zlib.decompress(bts)
 	# Deserialize files to a Python object -> http://docs.python.org/2/library/json.html#json-to-py-table
@@ -55,14 +56,14 @@ def get_grid(layer, x, y, z): #, ext):
 
 	# Get the data
 	keys = []
-	#for keyrow in c2.execute("select key_name as key, key_json as json from grid_data where zoom_level=? and tile_column=? and tile_row=?", (z, x, y)):
-	for keyrow in c2.execute("SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z)): #(67, 84, 7)): #(31, 39, 6)): #(x, y, z)):
+	for keyrow in c2.execute("select key_name as key, key_json as json from grid_data where zoom_level=? and tile_column=? and tile_row=?", (z, x, y_new)):
+	# for keyrow in c2.execute("SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z)): #(67, 84, 7)): #(31, 39, 6)): #(x, y, z)):
 		keyname, keydata = keyrow  
 		keys.append((keyname, eval(keydata))) 
 	datadict = dict(keys)
 	jsonfiles[u'data'] = datadict
 	# return jsonfiles
-	print "get_grid: okey x y w %s %s %s %s" % (x, y, z, len(keys),)
+	print "get_grid: okey x y w %s %s %s %s" % (x, y_new, z, len(keys),)
 	# Serialize jsonfiles to a JSON formatted string using -> http://docs.python.org/2/library/json.html#py-to-json-table
 	res = json.dumps(jsonfiles)
 	# return res
