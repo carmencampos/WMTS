@@ -2,6 +2,7 @@
 import sqlite3
 import json
 import zlib
+import bottle
 
 def get_tile(layer, x, y, z, ext, isWMTS):
 	y_new = int(y)
@@ -16,7 +17,8 @@ def get_tile(layer, x, y, z, ext, isWMTS):
 	except:
 		# return None
 		# In case the connection can not be done
-		start_response('404 Not found', [('Content-Type', 'text/plain')])
+		# start_response('404 Not found', [('Content-Type', 'text/plain')])
+		bottle.response.content_type = "text/plain"
 		return ["Not found: %s.mbtiles" % (layer,)]
 	# Get the tiles from the database, using the zoom and the coordinates we got previously
 	c.execute("select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z))
@@ -27,6 +29,8 @@ def get_tile(layer, x, y, z, ext, isWMTS):
 		# get_grid(layer, x, y, z)
 		# In case there are tiles, print them with their necesary headers
 		return bytes(res[0])
+	# If we have successfully connected to the database, but there is not tiles, it is not an error:
+	# it is because that part of the map can be undefined, because it is not a whole world map
 	return None
 
 
@@ -40,14 +44,17 @@ def get_grid(layer, x, y, z): #, callback): #, ext):
 		# c2 = db.cursor()
 	except:
 		# In case the connection can not be done
-		start_response('404 Not found', [('Content-Type', 'text/plain')])
+		# start_response('404 Not found', [('Content-Type', 'text/plain')])
+		bottle.response.content_type = "text/plain"
 		return ["Not found: %s.mbtiles" % (layer,)]
 	# Get the utfgrid info from the database, using the zoom and the coordinates we got previously
 	c1.execute("select grid from grids where tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z)) #(67, 84, 7)) #(31, 39, 6)) #
 	#c1.execute("select * from grids")
 	row = c1.fetchone()
+	# If we have successfully connected to the database, but there is not grids, it is not an error:
+	# it is because that part of the map can be undefined, because it is not a whole world map
 	if not row:
-		print "NO ROW"
+		# print "NO ROW"
 		return None
 	bts = bytes(row[0])
 	print "get_grid: ROW x y w %s %s %s %s" % (x, y_new, z, len(bts),)

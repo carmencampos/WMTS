@@ -63,6 +63,9 @@ var tilejson = {
 		.setView(new L.LatLng(47, 8), 4);
 		//.setView(new L.LatLng(50, 11), 0);
 	
+	// Permanent link, to know latitud and longitud
+	var hash = new L.Hash(map);
+	
 	// To add a legend
 	wax.leaf.legend(map, tilejson).appendTo(map._container);
 	

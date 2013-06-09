@@ -49,6 +49,9 @@ wax.tilejson(url,
 	  .addLayer(oam)
 	  .addLayer(hostedTiles)
       .setView(new L.LatLng(47, 8), 3);
+	
+	// Permanent link, to know latitud and longitud
+	var hash = new L.Hash(map);
 	  
 	// Add a legend
 	wax.leaf.legend(map, tilejson).appendTo(map._container);
