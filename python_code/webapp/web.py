@@ -39,7 +39,7 @@ def web_leaflet1():
 def web_leaflet2():
 	return dict()
 
-@app.route('/swtizerlandLL')
+@app.route('/switzerlandLL')
 @bottle.view('switzerlandLL')
 def web_leaflet_switzerland1():
 	return dict()
@@ -65,13 +65,13 @@ def web_openlayers_switzerland1():
 	return dict()
 
 # WMTS
-@app.route('/exampleLLwmts')
-@bottle.view('exampleLLwmts')
+@app.route('/exampleOLwmts')
+@bottle.view('exampleOLwmts')
 def web_leaflet_wmts():
 	return dict()
 
-@app.route('/swtizerlandOLwmts')
-@bottle.view('switzerlandOLwmts')
+@app.route('/switzerlandLLwmts')
+@bottle.view('switzerlandLLwmts')
 def web_openlayers_wmts():
 	return dict()
 	

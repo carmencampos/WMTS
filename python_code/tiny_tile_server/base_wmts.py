@@ -23,7 +23,8 @@ def get_tile(layer, x, y, z, ext):
 	caux2.execute("select min(tile_row) from tiles where zoom_level=? and tile_column=?", (z, x))
 	resaux2 = caux2.fetchone()
 	# print "YYYYYYYYYYYYYmin %s" % resaux2[0]
-	y_new = int(resaux1[0]) - int(y) + int(resaux2[0])
+	# y_new = int(resaux1[0]) - int(y) + int(resaux2[0])
+	y_new = (2**int(z) - 1) - int(y)
 	c.execute("select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z))
 	res = c.fetchone()
 	if res:

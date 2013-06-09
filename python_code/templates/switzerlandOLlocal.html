@@ -12,14 +12,17 @@
 <script src="http://openlayers.org/dev/OpenLayers.js"></script>
 <link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.css" type="text/css">
 <style>
-.olControlAttribution {
-   	font-size: smaller; 
+  .olControlAttribution { 
+  	font-size: smaller; 
    	right: 2px;
    	bottom: 2px;
    	position: absolute; 
    	display: block;
-}
-</style>
+  }
+ .olImageLoadError {
+    background-color: transparent !important;
+  }
+</style> 
 
 <!-- Map -->
 <script src="/assets/js/switzerlandOLlocal_handler.js"></script>
@@ -27,5 +30,7 @@
 <div class="container">
     <section>
 		<div id="map" style="width: 100%; height: 460px"></div>
+		<div id="output"></div>
+		<div id="flag"></div>
     </section>
 </div>

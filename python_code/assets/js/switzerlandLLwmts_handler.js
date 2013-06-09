@@ -1,38 +1,43 @@
 
 $(document).ready(function() {
+
+	var map;
 	
-var map;
+	// we take data from OpenStreetMap to use a base layer
+	var oam = new L.TileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+		maxZoom: 17,
+		minZoom: 2,
+		subdomains: ["otile1", "otile2", "otile3", "otile4"],
+	});
+	
+	var wmts = L.tileLayer('http://localhost:8000/api/tilewmts/points_of_interest1/{z}/{x}/{y}.png?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}', {
+		maxZoom: 7,
+		minZoom: 2,
+		opacity: 0.7
+	});
+	
+	// we can decide which one of these layers we want to show, or none of them
+	var overlays = {
+		"Hosted Tiles": wmts
+	};
 
-// we take data from OpenStreetMap to use a base layer
-var oam = new L.TileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-	maxZoom: 17,
-	minZoom: 2,
-	subdomains: ["otile1", "otile2", "otile3", "otile4"],
-});
+	// the baseLayers appears always on the map
+	var baseLayers = {
+		"OSM Tiles": oam,
+	};
 
-// this part is to show the layer using the local map
-var mbTiles = new L.tileLayer("http://localhost:8000/api/tile/{s}/{z}/{x}/{y}.png", {
-	tms: true,
-	minZoom: 5,
-	subdomains : ["points_of_interest1"], //points_of_interest
-	opacity: 0.5
-});
-
-// we can decide which one of these layers we want to show, or none of them
-var overlays = {
-	"Hosted Tiles": mbTiles
-};
-
-// the baseLayers appears always on the map
-var baseLayers = {
-	"MapQuest Streets": oam
-};
-
-layersControl = new L.Control.Layers(baseLayers, overlays, {
-	// using "true" the switched layer box appears collapsed
-	collapsed: true
-});
-
+	layersControl = new L.Control.Layers(baseLayers, overlays, {
+		// using "true" the switched layer box appears collapsed
+		collapsed: true
+	});
+		
+/*	map = new L.map('map',{
+		// these are the layers that appear by default
+		layers: [baseOSM, wmts],
+		center : new L.LatLng(47, 5),
+		zoom : 6
+	}); */
+	
 var tilejson = {
     tilejson: '1.0.0',
     //tms: true, 
@@ -47,10 +52,10 @@ var tilejson = {
 
 
     map = new L.Map('map')
-		.addLayer(mbTiles)
+		.addLayer(wmts)
 		.addLayer(oam)
         //.addLayer(new wax.leaf.connector(tilejson))
-        .setView(new L.LatLng(47, 8), 7);
+        .setView(new L.LatLng(47, 8), 6);
         // var interaction = wax.leaf.interaction(map, tilejson);
 
 	// To add a legend
@@ -72,3 +77,5 @@ var tilejson = {
 	L.control.scale().addTo(map);
 
 });
+	
+

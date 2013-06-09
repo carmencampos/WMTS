@@ -15,11 +15,11 @@ title = "Tiny Tile Server"
 service = ""
 maps = []
 
-def init_data(layer, x, y, z):
+def init_data(layer, x, y, z, ext):
 	global mylayer
 	mylayer = layer
 	# callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
-	return python_wmts.get_tile_wmts(mylayer, x, y, z)
+	return python_wmts.get_tile_wmts(mylayer, x, y, z, ext)
 
 # CORS header
 print 'Access-Control-Allow-Origin: *'

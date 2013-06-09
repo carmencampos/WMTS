@@ -11,7 +11,7 @@ python_wmts = bottle.Bottle()
 #global layer
 #layer = "empty"
 	
-def get_tile_wmts(mylayer, x, y, z):
+def get_tile_wmts(mylayer, x, y, z, ext):
 	mercator = GlobalMercator()
 	layer = mylayer
 	mytitle = title #"Tiny Tile Server"

@@ -19,13 +19,14 @@ from tiny_tile_server import python_server
 @api.route('/tile/<layer>/<z>/<x>/<y>.<ext>')
 def api_tile(layer, z, x, y, ext):
 	bottle.response.content_type = "image/%s" % ext
-	return base_xyz.get_tile(layer, x, y, z, ext)
+	return base_xyz.get_tile(layer, x, y, z, ext, False)
 
-#@api.route('/grid/<layer>/<z>/<x>/<y>.<ext>')
 @api.route('/grid/<layer>/<z>/<x>/<y>.grid.json')
-def api_grid(layer, z, x, y):
+# @api.route('/grid/<layer>/<z>/<x>/<y>.grid.json?callback=grid')
+def api_grid(layer, z, x, y):#, cback):
+	print "accedeeeee"
 	bottle.response.content_type = "application/json"
-	return base_xyz.get_grid(layer, x, y, z)
+	return base_xyz.get_grid(layer, x, y, z) #, cback)
 	
 @api.route('/metadata/<layer>/metadata.json')
 def api_metadata(layer):
@@ -34,19 +35,19 @@ def api_metadata(layer):
 
 #http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}')
 #@api.get('/wmtstile/Service=WMTS/Version=1.0.0/Request=GetTile/Layer=<layer>/style=default/format=image/jpeg/TileMatrixSet=googlemapscompatible/TileMatrix=<z>/TileRow=<x>/TileCol=<y>')
-@api.get('/wmtstile/<layer>/<z>/<x>/<y>.png')
+@api.get('/wmtstile/<layer>/<z>/<x>/<y>.<ext>')
 #http://bottlepy.org/docs/dev/tutorial.html#request-routing
 #:path matches all characters including the slash character in a non-greedy way and can be used to match more than one path segment.
-def api_wmts(layer, z, x, y):
+def api_wmts(layer, z, x, y, ext):
 	print "accede a api_wmts url: " #+ url
 	#bottle.response.content_type = "application/xml"
-	return python_server.init_data(layer, x, y, z)
+	return python_server.init_data(layer, x, y, z, ext)
 	#return python_wmts.get_tile_wmts(layer, x, y, z)
 	
 @api.route('/tilewmts/<layer>/<z>/<x>/<y>.<ext>')
 def api_tilewmts(layer, z, x, y, ext):
 	bottle.response.content_type = "image/%s" % ext
-	return base_wmts.get_tile(layer, x, y, z, ext)
+	return base_xyz.get_tile(layer, x, y, z, ext, True)
 
 #@api.route('/grid/<layer>/<z>/<x>/<y>.<ext>')
 @api.route('/gridwmts/<layer>/<z>/<x>/<y>.grid.json')

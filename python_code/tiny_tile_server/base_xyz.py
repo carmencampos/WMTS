@@ -3,22 +3,26 @@ import sqlite3
 import json
 import zlib
 
-def get_tile(layer, x, y, z, ext):
+def get_tile(layer, x, y, z, ext, isWMTS):
+	y_new = int(y)
+	if(isWMTS):
+		y_new = (2**int(z) - 1) - int(y)
 	try:
 		# Connect to the database and get the cursor
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c = db.cursor()
-		caux1 = db.cursor()
-		caux2 = db.cursor()
-		#closing(db.cursor())
+		# caux1 = db.cursor()
+		# caux2 = db.cursor()
 	except:
 		# return None
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
 		return ["Not found: %s.mbtiles" % (layer,)]
 	# Get the tiles from the database, using the zoom and the coordinates we got previously
-	c.execute("select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?", (x, y, z))
+	c.execute("select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z))
 	res = c.fetchone()
+	db.close()
+	# c.close()
 	if res:
 		# get_grid(layer, x, y, z)
 		# In case there are tiles, print them with their necesary headers
@@ -26,15 +30,14 @@ def get_tile(layer, x, y, z, ext):
 	return None
 
 
-def get_grid(layer, x, y, z): #, ext):
+def get_grid(layer, x, y, z): #, callback): #, ext):
 	y_new = (2**int(z) - 1) - int(y) #int(y)# + 43
 	print "accede a grid"
     # Connect to the database and get the cursor
 	try:
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c1 = db.cursor()
-		c2 = db.cursor()
-		#closing(db.cursor())
+		# c2 = db.cursor()
 	except:
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
@@ -56,10 +59,14 @@ def get_grid(layer, x, y, z): #, ext):
 
 	# Get the data
 	keys = []
-	for keyrow in c2.execute("select key_name as key, key_json as json from grid_data where zoom_level=? and tile_column=? and tile_row=?", (z, x, y_new)):
-	# for keyrow in c2.execute("SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z)): #(67, 84, 7)): #(31, 39, 6)): #(x, y, z)):
+	for keyrow in c1.execute("select key_name as key, key_json as json from grid_data where zoom_level=? and tile_column=? and tile_row=?", (z, x, y_new)):
+	# for keyrow in c1.execute("SELECT keymap.key_name AS key_name, keymap.key_json AS key_json FROM map JOIN grid_utfgrid ON grid_utfgrid.grid_id = map.grid_id JOIN grid_key ON grid_key.grid_id = map.grid_id JOIN keymap ON grid_key.key_name = keymap.key_name WHERE tile_column=? and tile_row=? and zoom_level=?", (x, y_new, z)): #(67, 84, 7)): #(31, 39, 6)): #(x, y, z)):
 		keyname, keydata = keyrow  
-		keys.append((keyname, eval(keydata))) 
+		# eval() -> parse the variable keydata to its corresponding value
+		# The expression argument is parsed and evaluated as a Python expression (technically speaking, a condition list)
+		# The return value is the result of the evaluated expression.
+		keys.append((keyname, eval(keydata)))
+	db.close()
 	datadict = dict(keys)
 	jsonfiles[u'data'] = datadict
 	# return jsonfiles
@@ -68,6 +75,7 @@ def get_grid(layer, x, y, z): #, ext):
 	res = json.dumps(jsonfiles)
 	# return res
 	# Wrapped in a function to make it compatible with Wax
+	# sol = "%s(%s)" % (callback, res,) 
 	sol = "grid(%s)" % res #reqwest_1369811590395(%s)
 	return sol
 

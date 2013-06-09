@@ -14,7 +14,7 @@ var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg"
 var mbTiles = new L.tileLayer("http://localhost:8000/api/tile/{s}/{z}/{x}/{y}.png", {
 	tms: true,
 	minZoom: 0,
-	subdomains : ["example"], //example
+	subdomains : ["example"], 
 	opacity: 0.7
 });
 
@@ -48,30 +48,20 @@ var tilejson = {
 	scheme: 'tms',
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
     template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
-    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],  //example //geography-class
-    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],  //example
+    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],  //geography-class
+    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],  
 	//grids: ['http://c.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json'],
     formatter: function (options, data) { return "CODE: " + data.Name }
 };
 
-//var layer = L.mapbox.gridLayer(tilejson);
 
-//wax.tilejson(url, 
-//function(tilejson){
   	// here we create the map
 	map = new L.map('map')
-		//.addLayer(new wax.leaf.connector(tilejson))
 		.addLayer(mbTiles)
-		//.addLayer(layer)
 		.addLayer(oam)
-		// Switzerland
-		.setView(new L.LatLng(50, 11), 6);
-		//.setView(new L.LatLng(35, 9), 7);
-		//.setView(new L.LatLng(0, 0), 4);  //4
+		// center in Switzerland
+		.setView(new L.LatLng(47, 8), 4);
 		//.setView(new L.LatLng(50, 11), 0);
-		// these are the layers that appear by default
-		//layers: [oam, mbTiles]
-	//});
 	
 	// To add a legend
 	wax.leaf.legend(map, tilejson).appendTo(map._container);
