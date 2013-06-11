@@ -15,10 +15,11 @@ title = "Tiny Tile Server"
 service = ""
 maps = []
 
-def init_data(layer, x, y, z, ext):
+def init_data(layer, x, y, z, ext, callback=None):
+	if not callback:
+		callback = "grid"
 	global mylayer
 	mylayer = layer
-	# callback = $_GET['callback'] if ('callback' in $_GET) else ""    # VER 86
 	return python_wmts.get_tile_wmts(mylayer, x, y, z, ext)
 
 # CORS header
@@ -90,10 +91,10 @@ if(service == 'json'):
         output = tilejsons
 	output = json_encode(output)
     output = output.replace("\\/","/") 
-    #if(callback):
-    #    print "callback(output)"
-    #else
-    print output
+    if(callback):
+        print "callback(output)"
+    else:
+		print output
 
 
 # INTERNAL FUNCTIONS:
@@ -186,42 +187,6 @@ def metadataTileJson(metadata):
   tiles.append(config_url[0].metadata['basename'].append(ext))
   metadata['tiles'] = tiles
   return metadata
-
-# VER do we need this method?
-#def selfUrl(serverOnly = false):
-    #if not(isset($_SERVER['REQUEST_URI'])):
-    #    serverrequri = $_SERVER['PHP_SELF']
-    #else:
-    #    serverrequri = $_SERVER['REQUEST_URI']
-    #s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""
-    #port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"])
-    #if (serverOnly) return 'http'.s.'://'.$_SERVER['SERVER_NAME'].port."/"
-    #return 'http'.s.'://'.$_SERVER['SERVER_NAME'].port.serverrequri
-
-# VER do we need this method?
-#def doConditionalGet(timestamp):
-	# Bottle automatically adds a Last-Modified header and even supports the If-Modified-Since header
-    #last_modified = time.strftime('D, d M Y H:i:s \G\M\T', time.gmtime(timestamp))
-    #etag = '"'.hashlib.md5(last_modified).hexdigest().'"'
-    # Send the headers
-    #print "Last-Modified: last_modified"
-    #print "ETag: etag"
-	#See if the client has provided the required headers
-    #if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
-    #    stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
-    #    false
-    #if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
-    #    stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : 
-    #    false
-    #!if_modified_since && !if_none_match:
-    #    return None
-    # At least one of the headers is there - check them
-    #if_none_match && if_none_match != etag:
-    #    return None
-    #if_modified_since && if_modified_since != last_modified:
-    #    return None
-    # Nothing has changed since their last request - serve a 304 and exit
-    #print 'HTTP/1.0 304 Not Modified'
 
 
 # http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/

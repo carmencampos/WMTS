@@ -87,9 +87,31 @@ def get_grid(layer, x, y, z, callback=None): #, callback): #, ext):
 	# sol = "%s(%s)" % (callback, res,) 
 	sol = callback + "(" + res + ")" #"grid(%s)" 
 	return sol
-
-
+	
 def get_metadata(layer):
+	metadata = {}
+	try:
+		# Connect to the database and get the cursor
+		db = sqlite3.connect("data/%s.mbtiles" % layer)
+		c = db.cursor()
+		# closing(db.cursor)
+	except:
+		# In case the connection can not be done
+		bottle.response.content_type = "text/plain"
+		return ["Not found: %s.mbtiles" % (layer,)]
+	res = c.execute("select * from metadata")
+	result = c.fetchall()
+	db.close()
+	for r in result:
+		a = r[0] 
+		b = r[1] 
+		print a
+		print b
+		metadata[a] = b 
+	return metadata
+
+
+def def_metadata(layer):
 	print "accede a metadata"
     # Connect to the database and get the cursor
 	try:

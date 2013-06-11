@@ -15,23 +15,31 @@ from tiny_tile_server import python_server
 #http://myhost.com/mapcache/wmts/1.0.0/WMTSCapabilities.xml
 #http://tileserver.maptiler.com/?service=wmts&request=getcapabilities&version=1.0.0
 
+def grid():
+	print "hola que tal"
 
 @api.route('/tile/<layer>/<z>/<x>/<y>.<ext>')
 def api_tile(layer, z, x, y, ext):
 	bottle.response.content_type = "image/%s" % ext
 	return base_xyz.get_tile(layer, x, y, z, ext, False)
 
+#@api.route('/grid/<layer>/<z>/<x>/<y>.grid.json')
 @api.route('/grid/<layer>/<z>/<x>/<y>.grid.json')
-# @api.route('/grid/<layer>/<z>/<x>/<y>.grid.json?callback=grid')
-def api_grid(layer, z, x, y):#, cback):
+#@api.route('/grid/<layer>/<z>/<x>/<y>.grid.json?callback=grid')
+def api_grid(layer, z, x, y):
 	print "accedeeeee"
 	bottle.response.content_type = "application/json"
 	return base_xyz.get_grid(layer, x, y, z) #, cback)
-	
+
 @api.route('/metadata/<layer>/metadata.json')
 def api_metadata(layer):
 	bottle.response.content_type = "application/json"
 	return base_xyz.get_metadata(layer)
+	
+@api.route('/metadata_info/<layer>/metadata.json')
+def api_def_metadata(layer):
+	bottle.response.content_type = "application/json"
+	return base_xyz.def_metadata(layer)
 
 #http://localhost:8000/api/tile?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}')
 #@api.get('/wmtstile/Service=WMTS/Version=1.0.0/Request=GetTile/Layer=<layer>/style=default/format=image/jpeg/TileMatrixSet=googlemapscompatible/TileMatrix=<z>/TileRow=<x>/TileCol=<y>')
