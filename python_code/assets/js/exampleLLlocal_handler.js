@@ -43,13 +43,18 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 }*/
 
 var tilejson = {
-    tilejson: '1.0.0',
-    //tms: true, 
-	scheme: 'tms',
+    tilejson: '2.0.0',
+	version: '1.0.0',
+    bounds: [-166.9922,-74.212,164.8828,81.0932],
+	center: [0,0,2],
+	maxzoom: 7,
+	minzoom: 0,
+	name: "Example",
+	scheme: "xyz",
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
     template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
     tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],  //geography-class
-    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],  
+    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json?'],  
 	//grids: ['http://c.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json'],
     formatter: function (options, data) { return "CODE: " + data.Name }
 };

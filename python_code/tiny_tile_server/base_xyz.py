@@ -34,7 +34,9 @@ def get_tile(layer, x, y, z, ext, isWMTS):
 	return None
 
 
-def get_grid(layer, x, y, z): #, callback): #, ext):
+def get_grid(layer, x, y, z, callback=None): #, callback): #, ext):
+	if not callback:
+		callback = "grid"
 	y_new = (2**int(z) - 1) - int(y) #int(y)# + 43
 	print "accede a grid"
     # Connect to the database and get the cursor
@@ -83,7 +85,7 @@ def get_grid(layer, x, y, z): #, callback): #, ext):
 	# return res
 	# Wrapped in a function to make it compatible with Wax
 	# sol = "%s(%s)" % (callback, res,) 
-	sol = "grid(%s)" % res #reqwest_1369811590395(%s)
+	sol = callback + "(" + res + ")" #"grid(%s)" 
 	return sol
 
 
