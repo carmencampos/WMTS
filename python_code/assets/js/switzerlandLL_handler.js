@@ -13,7 +13,7 @@ var oam = new L.TileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // this part is to show the layer using the map hosted in mapbox
 // http://{s}.tiles.mapbox.com/v3/cbordons.swtizerland3/{z}/{x}/{y}.png is the url where our map is hosted in mapbox
 // in general would be http://{s}.tiles.mapbox.com/v3/{user}.{name-of-the-map}/{z}/{x}/{y}.png
-var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/cbordons.swtizerland3/{z}/{x}/{y}.png', {
+var hostedTiles = new L.tileLayer('http://{s}.tiles.mapbox.com/v3/cbordons.switzerland3/{z}/{x}/{y}.png', {
 	//If true, inverses Y axis numbering for tiles (turn this on for TMS services)
 	tms: false,
 	minZoom: 2,
@@ -39,17 +39,17 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 	
-var url = 'http://a.tiles.mapbox.com/v3/cbordons.swtizerland3.jsonp';
+var url = 'http://a.tiles.mapbox.com/v3/cbordons.switzerland3.jsonp';
 
 // We need Wax to add the legend and the tooltips to the map
 wax.tilejson(url, 
   function(tilejson) {
   	// here we create the map
 	map = new L.Map('map')
-      //.addLayer(new wax.leaf.connector(tilejson))
-	  .addLayer(oam)
+      .addLayer(oam)
 	  .addLayer(hostedTiles)
-      .setView(new L.LatLng(47, 8), 3);
+	  //.addLayer(new wax.leaf.connector(tilejson))
+      .setView(new L.LatLng(47, 8), 7);
 	  
 	// Permanent link, to know latitud and longitud
 	var hash = new L.Hash(map);
@@ -61,7 +61,7 @@ wax.tilejson(url,
 	wax.leaf.interaction()
     	.map(map)
     	.tilejson(tilejson)
-	// In this case, we add tooltip; when we want it to appear in a static place
+	// We can add atooltip, when we want it to appear in a static place
     	//.on(wax.tooltip().animate(true).parent(map._container).events());
 	// In this case, we add movetip; when we want it to appear where the mouse is
 		.on(wax.movetip().parent(map._container).events());

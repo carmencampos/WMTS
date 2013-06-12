@@ -8,8 +8,8 @@ import math
 
 import python_wmts
 import python_tms
-#from python_wmts import *
 
+# Here the user has to configure his own values 
 config_url = ["http://localhost:8000/"]
 title = "Tiny Tile Server"
 service = ""
@@ -63,7 +63,6 @@ if(len(maps) == 0):
 
 # Print the available maps
 else:
-    # print_r(maps)
     "<h3>Available maps</h3>"
     "<ul>"
     for map in maps:
@@ -102,15 +101,6 @@ if(service == 'json'):
 def maps():
     print "creating maps"
     maps = []
-    # Scan all directories with metadata.json
-    #mjs = glob.glob('*/metadata.json')
-    #if(mjs): 
-	#    for mj in mjs:
- 	#	    maps.append(metadataFromMetadataJson(mj))
-    # Scan all mbtiles
-    #mbts = glob.glob('*.mbtiles')
-    #if(mbts):
-	#    for mbt in mbts:
     maps.append(metadataFromMbtiles())
     return maps
 
@@ -133,13 +123,11 @@ def metadataFromMetadataJson(jsonFileName):
 # connect to the MBTiles database and extract all the metadata information from the metadata table, 
 # check that it is right and add in metadata the basename with the value of the layer name
 def metadataFromMbtiles():
-	# print "layer %s" % mylayer
 	metadata = {}
 	try:
 		# Connect to the database and get the cursor
 		db = sqlite3.connect("data/%s.mbtiles" % mylayer)
 		c = db.cursor()
-		# closing(db.cursor)
 	except:
 		# In case the connection can not be done
 		start_response('404 Not found', [('Content-Type', 'text/plain')])
@@ -147,9 +135,9 @@ def metadataFromMbtiles():
 	res = c.execute("select * from metadata")
 	result = c.fetchall()
 	for r in result:
-		a = r[0] #r['name']
-		b = r[1] #r['value']
-		metadata[a] = b ##sol = dict(a, b)
+		a = r[0] 
+		b = r[1] 
+		metadata[a] = b 
 	metadata = metadataValidation(metadata)
 	metadata['basename'] = mylayer
 	return metadata
@@ -182,7 +170,6 @@ def metadataTileJson(metadata):
   metadata['tilejson'] = '2.0.0'
   metadata['sheme'] = 'xyz'
   tiles = []
-#for url in config_url
   ext = '/{z}/{x}/{y}.'.append(metadata['format'])
   tiles.append(config_url[0].metadata['basename'].append(ext))
   metadata['tiles'] = tiles

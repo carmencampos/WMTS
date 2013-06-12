@@ -12,7 +12,6 @@ def server_static(path):
 @bottle.view('main')
 def web_main():
     return dict()
-    #return dict(title="Tiny Tile Server")#, menu="main")
 
 @app.route('/tutorials')
 @bottle.view('tutorials')
@@ -28,7 +27,8 @@ def web_planning():
 @bottle.view('protocol')
 def web_protocol():
 	return dict()
-	
+
+# XYZ
 @app.route('/exampleLL')
 @bottle.view('exampleLL')
 def web_leaflet1():
@@ -100,7 +100,7 @@ def web_tileMillSwitzerlandAntes():
 @app.route('/leaflet')
 @bottle.view('leaflet')
 def web_leaflet():
-	return dict()#title="Leaflet Example")#, menu="leaflet")
+	return dict()
 
 @app.route('/leafletPRUEBAS')
 @bottle.view('leafletPRUEBAS')
@@ -115,4 +115,4 @@ def web_leaflet():
 @app.route('/openlayers')
 @bottle.view('openlayers')
 def web_openlayers():
-	return dict()#title="Openlayers Example")#, menu="openlayers")
+	return dict()

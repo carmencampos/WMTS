@@ -1,37 +1,25 @@
 
 import bottle
-
-# we need the functions
 import python_server
 from python_server import *
 
 python_wmts = bottle.Bottle()
-
-#global service
-#global layer
-#layer = "empty"
 	
 def get_tile_wmts(mylayer, x, y, z, ext):
 	mercator = GlobalMercator()
 	layer = mylayer
-	mytitle = title #"Tiny Tile Server"
+	mytitle = title 
 	config = config_url[0]
 	TileMatrix = z
 	TileCol = x
 	TileRow = y
 	global mymaps
-	#mymaps = python_server.maps()
 	mymaps = maps()
 
-	# for m in mymaps: en 113
 	m = mymaps[0]	
 	basename = m['basename']
-	#title = m['name'] if ('name' in m) else basename
 	profile = m['profile']
 	bounds = m['bounds']
-	#print bounds
-	#print bounds[0]
-	#print bounds[1]
 	format = m['format']
 	mime = 'image/jpeg' if (format == 'jpg') else 'image/png'
 	if (profile == 'geodetic'):
@@ -46,8 +34,12 @@ def get_tile_wmts(mylayer, x, y, z, ext):
 		(maxx, maxy) = mercator.LatLonToMeters(float(c), float(d))
 		bounds3857 = [minx, miny, maxx, maxy]
 
-	bottle.response.content_type = "application/xml" #"text/xml"
-	# <?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n
+	# Here is described and created the getCapabilities information in XML
+	# Following its specification
+	# http://www.opengeospatial.org/standards/wmts
+	
+	bottle.response.content_type = "application/xml" 
+
 	return """
 	 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 	  <!-- Service Identification -->
