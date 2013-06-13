@@ -7,7 +7,6 @@ import hashlib
 import math
 
 import python_wmts
-import python_tms
 
 # Here the user has to configure his own values 
 config_url = ["http://localhost:8000/"]

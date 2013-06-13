@@ -32,8 +32,7 @@ def get_grid(layer, x, y, z, callback=None):
 	if not callback:
 		callback = "grid"
 	y_new = (2**int(z) - 1) - int(y) #int(y)# + 43
-	print "accede a grid"
-    # Connect to the database and get the cursor
+	# Connect to the database and get the cursor
 	try:
 		db = sqlite3.connect("data/%s.mbtiles" % layer)
 		c1 = db.cursor()
@@ -74,7 +73,9 @@ def get_grid(layer, x, y, z, callback=None):
 	return sol
 	
 	
-def get_metadata(layer):
+def get_metadata(layer, callback=None):
+	if not callback:
+		callback = "grid"
 	metadata = {}
 	try:
 		# Connect to the database and get the cursor

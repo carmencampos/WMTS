@@ -48,7 +48,7 @@ def web_leaflet_switzerland1():
 @bottle.view('switzerlandLLlocaL')
 def web_leaflet_switzerland2():
 	return dict()
-	
+
 @app.route('/exampleOL')
 @bottle.view('exampleOL')
 def web_openlayers1():

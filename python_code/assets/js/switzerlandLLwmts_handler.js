@@ -4,12 +4,16 @@ $(document).ready(function() {
 	var map;
 	
 	// we take data from OpenStreetMap to use a base layer
-	var oam = new L.TileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+	var oam = new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 		maxZoom: 17,
 		minZoom: 2,
-		subdomains: ["otile1", "otile2", "otile3", "otile4"],
+		// {s} means one of the randomly chosen subdomains, and here we specificate which are the subdomains
+		// This lets you spread out the requests across multiple subdomains which helps both for sharing your 
+		// requests to the server, and to download more tiles in parallel
+		subdomains: ["a", "b", "c"]
 	});
 	
+	// this part is to show the layer using the local map
 	var wmts = L.tileLayer('http://localhost:8000/api/tilewmts/points_of_interest1/{z}/{x}/{y}.png?Service=WMTS&Version=1.0.0&Request=GetTile&Layer=example&style=default&format=image/jpeg&TileMatrixSet=googlemapscompatible&TileMatrix={z}&TileRow={y}&TileCol={x}', {
 		maxZoom: 7,
 		minZoom: 2,
@@ -30,33 +34,26 @@ $(document).ready(function() {
 		// using "true" the switched layer box appears collapsed
 		collapsed: true
 	});
-		
-/*	map = new L.map('map',{
-		// these are the layers that appear by default
-		layers: [baseOSM, wmts],
-		center : new L.LatLng(47, 5),
-		zoom : 6
-	}); */
-	
+
+// This is the metadata.json information of our map
+// When we export our map in TileMill to a MBTiles database, the "tiles" URL and "grids" URL do not appear
+// on it, so we can not access directly to the metadata.json file
+// Another option would be to modify our MBTiles database with sqlite3 and insert those values	
 var tilejson = {
     tilejson: '1.0.0',
-    //tms: true, 
-	scheme: 'tms',
+    scheme: 'xyz',
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
     template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{name}}}{{/__teaser__}}{{#__full__}}<p>Picnic site</p> \n<p>{{{name}}}</p>{{/__full__}}",	
     tiles: ['http://localhost:8000/api/tile/points_of_interest1/{z}/{x}/{y}.png'],  
     grids: ['http://localhost:8000/api/grid/points_of_interest1/{z}/{x}/{y}.grid.json'],  
-	//grids: ['http://c.tiles.mapbox.com/v3/cbordons.switzerland3/{z}/{x}/{y}.grid.json'],
-    formatter: function (options, data) { return "CODE: " + data.Name }
+	formatter: function (options, data) { return "CODE: " + data.Name }
 };
 
-
+	// here we create the map
     map = new L.Map('map')
 		.addLayer(wmts)
 		.addLayer(oam)
-        //.addLayer(new wax.leaf.connector(tilejson))
-        .setView(new L.LatLng(47, 8), 6);
-        // var interaction = wax.leaf.interaction(map, tilejson);
+        .setView(new L.LatLng(47, 8), 7);
 		
 	// Permanent link, to know latitud and longitud
 	var hash = new L.Hash(map);
@@ -78,7 +75,4 @@ var tilejson = {
 	
 	// Add a scale to the map
 	L.control.scale().addTo(map);
-
 });
-	
-

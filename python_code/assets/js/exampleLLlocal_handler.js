@@ -7,7 +7,10 @@ var map;
 var oam = new L.TileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
 	maxZoom: 17,
 	minZoom: 0,
-	subdomains: ["otile1", "otile2", "otile3", "otile4"],
+	// {s} means one of the randomly chosen subdomains, and here we specificate which are the subdomains
+	// This lets you spread out the requests across multiple subdomains which helps both for sharing your 
+	// requests to the server, and to download more tiles in parallel
+	subdomains: ["otile1", "otile2", "otile3", "otile4"]
 });
 
 // this part is to show the layer using the local map
@@ -33,15 +36,10 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 	collapsed: true
 });
 
-/*grid = function (e){
-	alert('Bar');
-	if (e.grid) {
-		document.getElementById('more').innerHTML = 'and: ' + e.data.Name;
-	}
-	else
-		document.getElementById('more').innerHTML = 'and: ' + "nothing else...";
-}*/
-
+// This is the metadata.json information of our map
+// When we export our map in TileMill to a MBTiles database, the "tiles" URL and "grids" URL do not appear
+// on it, so we can not access directly to the metadata.json file
+// Another option would be to modify our MBTiles database with sqlite3 and insert those values
 var tilejson = {
     tilejson: '2.0.0',
 	version: '1.0.0',
@@ -53,21 +51,17 @@ var tilejson = {
 	scheme: "xyz",
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
     template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
-    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'],  //geography-class
+    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'], 
     grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],  
-	//grids: ['http://c.tiles.mapbox.com/v3/carmencampos.example/{z}/{x}/{y}.grid.json'],
-    formatter: function (options, data) { return "CODE: " + data.Name }
+	formatter: function (options, data) { return "CODE: " + data.Name }
 };
 
-//wax.tilejson('http://c.tiles.mapbox.com/v3/carmencampos.example.jsonp',
-//  function(tilejson) {
   	// here we create the map
 	map = new L.map('map')
 		.addLayer(mbTiles)
 		.addLayer(oam)
 		// center in Switzerland
 		.setView(new L.LatLng(47, 8), 4);
-		//.setView(new L.LatLng(50, 11), 0);
 	
 	// Permanent link, to know latitud and longitud
 	var hash = new L.Hash(map);
@@ -89,6 +83,4 @@ var tilejson = {
 	
 	// Add a scale to the map
 	L.control.scale().addTo(map);
-//});
-
 });
