@@ -33,7 +33,7 @@ $(document).ready(function() {
 	// When we export our map in TileMill to a MBTiles database, the "tiles" URL and "grids" URL do not appear
 	// on it, so we can not access directly to the metadata.json file
 	// Another option would be to modify our MBTiles database with sqlite3 and insert those values
-	var tilejson = {
+	var tilejsonNO = {
 		tilejson: '1.0.0',
 		scheme: 'xyz',
 		legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
@@ -42,15 +42,20 @@ $(document).ready(function() {
 		grids: ['http://localhost:8000/api/grid/points_of_interest1/{z}/{x}/{y}.grid.json'],  
 		formatter: function (options, data) { return "CODE: " + data.Name }
 	};
-	
+
+var url = 'http://localhost:8000/api/metadata/points_of_interest1/metadata.jsonp';
+
+// We need Wax to add the legend and the tooltips to the map
+wax.tilejson(url,
+  function(tilejson) {	
 	// here we create the map  
 	map = new OpenLayers.Map({
         div: "map", 
         projection: "EPSG:900913",
 		layers: [
 			osm, 
-			mbTiles
-			//wax.ol.connector(tilejson)
+			mbTiles,
+			wax.ol.connector(tilejson)
 		],
         controls: [
 		// To be able to add or remove a overlay layer, or to choose which base layer will be shown
@@ -68,7 +73,7 @@ $(document).ready(function() {
 		// To display the location in the URL
 		new OpenLayers.Control.Permalink({anchor: true})
 		// To display the legend using Wax
-		//new wax.ol.Legend(),
+		//new wax.ol.Legend()
 		// To display tooltips using Wax
 		//new wax.ol.interaction()
 		]
@@ -76,5 +81,7 @@ $(document).ready(function() {
 
 // To specify the center and the zoom at the beginning
 map.setCenter(new OpenLayers.LonLat(9.63,46.88).transform(new OpenLayers.Projection("EPSG:4326"),map.getProjectionObject()), 7);     
+
+});
 
 });

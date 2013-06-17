@@ -23,6 +23,12 @@ def api_grid(layer, z, x, y):
 def api_metadata(layer):
 	bottle.response.content_type = "application/json"
 	return base.get_metadata(layer)
+	
+# Access to metadata JSONP
+@api.route('/metadata/<layer>/metadata.jsonp')
+def api_metadata(layer):
+	bottle.response.content_type = "application/json"
+	return base.get_metadataJSONP(layer)
 
 # Print metadata information
 @api.route('/metadata_info/<layer>/metadata.json')

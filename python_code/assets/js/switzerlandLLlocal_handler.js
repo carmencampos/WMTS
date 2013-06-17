@@ -43,7 +43,7 @@ layersControl = new L.Control.Layers(baseLayers, overlays, {
 // When we export our map in TileMill to a MBTiles database, the "tiles" URL and "grids" URL do not appear
 // on it, so we can not access directly to the metadata.json file
 // Another option would be to modify our MBTiles database with sqlite3 and insert those values
-var tilejson = {
+var tilejsonNO = {
     tilejson: '1.0.0',
     scheme: 'xyz',
 	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
@@ -53,10 +53,16 @@ var tilejson = {
 	formatter: function (options, data) { return "CODE: " + data.Name }
 };
 
+var url = 'http://localhost:8000/api/metadata/points_of_interest1/metadata.jsonp';
+
+// We need Wax to add the legend and the tooltips to the map
+wax.tilejson(url,
+  function(tilejson) {
 	// here we create the map
     map = new L.Map('map')
 		.addLayer(mbTiles)
 		.addLayer(oam)
+		.addLayer(new wax.leaf.connector(tilejson))
         .setView(new L.LatLng(47, 8), 7);
         
 	// Permanent link, to know latitud and longitud
@@ -79,4 +85,6 @@ var tilejson = {
 	
 	// Add a scale to the map
 	L.control.scale().addTo(map);
+});
+
 });

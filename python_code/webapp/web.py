@@ -95,24 +95,3 @@ def web_tileMillSwitzerland():
 @bottle.view('tileMillSwitzerlandAntes')
 def web_tileMillSwitzerlandAntes():
 	return dict()
-	
-# TESTING
-@app.route('/leaflet')
-@bottle.view('leaflet')
-def web_leaflet():
-	return dict()
-
-@app.route('/leafletPRUEBAS')
-@bottle.view('leafletPRUEBAS')
-def web_leaflet():
-	return dict()
-	
-@app.route('/leafletPRUEBASutfgrid')
-@bottle.view('leafletPRUEBASutfgrid')
-def web_leaflet():
-	return dict()
-	
-@app.route('/openlayers')
-@bottle.view('openlayers')
-def web_openlayers():
-	return dict()

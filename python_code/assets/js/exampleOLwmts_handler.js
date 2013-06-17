@@ -27,7 +27,7 @@ var wmts = new OpenLayers.Layer.WMTS({
 // When we export our map in TileMill to a MBTiles database, the "tiles" URL and "grids" URL do not appear
 // on it, so we can not access directly to the metadata.json file
 // Another option would be to modify our MBTiles database with sqlite3 and insert those values
-var tilejson = {
+var tilejsonNO = {
     tilejson: '2.0.0',
 	version: '1.0.0',
     bounds: [-166.9922,-74.212,164.8828,81.0932],
@@ -42,8 +42,12 @@ var tilejson = {
     grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],  
 	formatter: function (options, data) { return "CODE: " + data.Name }
 };
-  
-// here we create the map  
+
+var url = 'http://localhost:8000/api/metadata/example/metadata.jsonp';
+
+// We need Wax to add the legend and the tooltips to the map
+wax.tilejson(url,
+  function(tilejson) {
 map = new OpenLayers.Map({
     div: "map",
 	layers: [
@@ -76,5 +80,7 @@ map = new OpenLayers.Map({
 
 // To specify the center and the zoom at the beginning	
 map.setCenter(new OpenLayers.LonLat(9.63,46.88).transform(new OpenLayers.Projection("EPSG:4326"),map.getProjectionObject()), 3);     
+
+});
 
 });

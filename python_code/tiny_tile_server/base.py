@@ -48,7 +48,6 @@ def get_grid(layer, x, y, z, callback=None):
 	if not row:
 		return None
 	bts = bytes(row[0])
-	# print "get_grid: ROW x y w %s %s %s %s" % (x, y_new, z, len(bts),)
 	# Decompresses the data in string, returning a string containing the uncompressed data.
 	files = zlib.decompress(bts)
 	# Deserialize files to a Python object -> http://docs.python.org/2/library/json.html#json-to-py-table
@@ -65,7 +64,6 @@ def get_grid(layer, x, y, z, callback=None):
 	db.close()
 	datadict = dict(keys)
 	jsonfiles[u'data'] = datadict
-	# print "get_grid: okey x y w %s %s %s %s" % (x, y_new, z, len(keys),)
 	# Serialize jsonfiles to a JSON formatted string using -> http://docs.python.org/2/library/json.html#py-to-json-table
 	res = json.dumps(jsonfiles)
 	# Wrapped in a function because of JSONP
@@ -93,6 +91,32 @@ def get_metadata(layer, callback=None):
 		b = r[1] 
 		metadata[a] = b 
 	return metadata
+
+def get_metadataJSONP(layer, callback=None):
+	if not callback:
+		callback = "grid"
+	metadata1 = {}
+	try:
+		# Connect to the database and get the cursor
+		db = sqlite3.connect("data/%s.mbtiles" % layer)
+		c = db.cursor()
+	except:
+		# In case the connection can not be done
+		bottle.response.content_type = "text/plain"
+		return ["Not found: %s.mbtiles" % (layer,)]
+	c.execute("select * from metadata")
+	row = c.fetchall()
+	# If we have successfully connected to the database, but there is not grids, it is not an error:
+	# it is because that part of the map can be undefined, because it is not a whole world map
+	if not row:
+		return None
+	#db.close()
+	for r in row:
+		a = r[0] 
+		b = r[1] 
+		metadata1[a] = b 
+	metadata2 = json.dumps(metadata1)
+	return "%s(%s)" % (callback, metadata2,)
 
 
 def def_metadata(layer):

@@ -129,7 +129,7 @@ def metadataFromMbtiles():
 		c = db.cursor()
 	except:
 		# In case the connection can not be done
-		start_response('404 Not found', [('Content-Type', 'text/plain')])
+		bottle.response.content_type = "text/plain"
 		return ["Not found: %s.mbtiles" % (mylayer,)]
 	res = c.execute("select * from metadata")
 	result = c.fetchall()
