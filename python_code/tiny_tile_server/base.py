@@ -4,6 +4,8 @@ import json
 import zlib
 import bottle
 
+config_url = ["http://localhost:8000/"]
+
 def get_tile(layer, x, y, z, ext, isWMTS):
 	y_new = int(y)
 	if(isWMTS):
@@ -115,6 +117,12 @@ def get_metadataJSONP(layer, callback=None):
 		a = r[0] 
 		b = r[1] 
 		metadata1[a] = b 
+	if not 'format' in metadata1:
+		metadata1['format'] = 'png'
+	tilesURL = "%sapi/tile/%s/{z}/{x}/{y}.%s" % (config_url[0], layer, metadata1['format'],)
+	gridsURL = "%sapi/grid/%s/{z}/{x}/{y}.grid.json" % (config_url[0], layer,)
+	metadata1[u'tiles'] = tilesURL
+	metadata1[u'grids'] = gridsURL
 	metadata2 = json.dumps(metadata1)
 	return "%s(%s)" % (callback, metadata2,)
 
