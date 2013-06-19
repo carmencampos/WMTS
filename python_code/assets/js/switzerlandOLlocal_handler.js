@@ -29,20 +29,7 @@ $(document).ready(function() {
 		return "http://localhost:8000/api/tile/points_of_interest1/" + z + "/" + x + "/" + y + ".png";
     }
 
-	// This is the metadata.json information of our map
-	// When we export our map in TileMill to a MBTiles database, the "tiles" URL and "grids" URL do not appear
-	// on it, so we can not access directly to the metadata.json file
-	// Another option would be to modify our MBTiles database with sqlite3 and insert those values
-	var tilejsonNO = {
-		tilejson: '1.0.0',
-		scheme: 'xyz',
-		legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
-		template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{name}}}{{/__teaser__}}{{#__full__}}<p>Picnic site</p> \n<p>{{{name}}}</p>{{/__full__}}",	
-		tiles: ['http://localhost:8000/api/tile/points_of_interest1/{z}/{x}/{y}.png'],  
-		grids: ['http://localhost:8000/api/grid/points_of_interest1/{z}/{x}/{y}.grid.json'],  
-		formatter: function (options, data) { return "CODE: " + data.Name }
-	};
-
+// This is the metadata.json information of our map
 var url = 'http://localhost:8000/api/metadata/points_of_interest1/metadata.jsonp';
 
 // We need Wax to add the legend and the tooltips to the map

@@ -24,25 +24,6 @@ var wmts = new OpenLayers.Layer.WMTS({
 });
 
 // This is the metadata.json information of our map
-// When we export our map in TileMill to a MBTiles database, the "tiles" URL and "grids" URL do not appear
-// on it, so we can not access directly to the metadata.json file
-// Another option would be to modify our MBTiles database with sqlite3 and insert those values
-var tilejsonNO = {
-    tilejson: '2.0.0',
-	version: '1.0.0',
-    bounds: [-166.9922,-74.212,164.8828,81.0932],
-	center: [0,0,2],
-	maxzoom: 7,
-	minzoom: 0,
-	name: "Example",
-	scheme: "xyz",
-	legend: "<p>About this map</p>\n<p>Here are shown the differents rivers, lakes and oceans in the Earth</p>", 
-    template: "{{#__location__}}{{/__location__}}{{#__teaser__}}{{{Name}}}{{/__teaser__}}{{#__full__}}{{/__full__}}", 
-    tiles: ['http://localhost:8000/api/tile/example/{z}/{x}/{y}.png'], 
-    grids: ['http://localhost:8000/api/grid/example/{z}/{x}/{y}.grid.json'],  
-	formatter: function (options, data) { return "CODE: " + data.Name }
-};
-
 var url = 'http://localhost:8000/api/metadata/example/metadata.jsonp';
 
 // We need Wax to add the legend and the tooltips to the map
