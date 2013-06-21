@@ -1,4 +1,5 @@
 import sys, os, json, re, bottle
+from bottle import route, request, response
 
 api = bottle.Bottle();
 
@@ -15,8 +16,9 @@ def api_tile(layer, z, x, y, ext):
 # Access to grids
 @api.route('/grid/<layer>/<z>/<x>/<y>.grid.json')
 def api_grid(layer, z, x, y):
+	callback = request.query.callback or 'grid'
 	bottle.response.content_type = "application/json"
-	return base.get_grid(layer, x, y, z)
+	return base.get_grid(layer, x, y, z, callback)
 
 # Access to metadata
 @api.route('/metadata/<layer>/metadata.json')
